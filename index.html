@@ -4,34 +4,46 @@
 <title>WT Lab Exam</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Consolas,monospace;background:#0d1117;color:#c9d1d9;padding:15px}
-h1{color:#58a6ff;text-align:center;font-size:20px;margin-bottom:10px}
-.top{text-align:center;margin-bottom:15px}
+body{font-family:Consolas,monospace;background:#0d1117;color:#c9d1d9;padding:15px;line-height:1.6}
+h1{color:#58a6ff;text-align:center;font-size:20px;margin-bottom:5px}
+.top{text-align:center;margin-bottom:12px}
 select{background:#161b22;color:#58a6ff;border:1px solid #30363d;padding:10px 20px;font-size:16px;border-radius:6px;cursor:pointer;font-family:Consolas,monospace}
+.toolbar{text-align:center;margin-bottom:12px;display:none}
+.toolbar button{background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:6px 14px;margin:3px;border-radius:4px;cursor:pointer;font-family:Consolas,monospace;font-size:12px}
+.toolbar button:hover{background:#30363d}
 .week{display:none}
 .week.active{display:block}
-h2{color:#f0883e;padding:8px;background:#161b22;border-left:4px solid #f0883e;margin:15px 0 8px}
-h3{color:#7ee787;margin:10px 0 5px}
+h2{color:#f0883e;padding:8px;background:#161b22;border-left:4px solid #f0883e;margin:15px 0 8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.copy-all-btn{background:#238636;color:#fff;border:none;padding:5px 14px;border-radius:4px;cursor:pointer;font-size:12px;font-family:Consolas,monospace}
+.copy-all-btn:hover{background:#2ea043}
 .theory{background:#1c2333;padding:10px;border-radius:6px;margin:8px 0;border-left:3px solid #58a6ff;line-height:1.7}
 .code-block{position:relative;margin:8px 0}
-.code-block pre{background:#161b22;padding:12px;padding-top:35px;border-radius:6px;overflow-x:auto;font-size:13px;border:1px solid #30363d;line-height:1.5;white-space:pre;tab-size:4}
-.copy-btn{position:absolute;top:5px;right:5px;background:#238636;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px;font-family:Consolas,monospace;z-index:1}
-.copy-btn:hover{background:#2ea043}
+.code-block pre{background:#161b22;padding:12px;padding-top:38px;border-radius:6px;overflow-x:auto;font-size:13px;border:1px solid #30363d;line-height:1.5;white-space:pre;tab-size:4}
+.copy-btn{position:absolute;top:6px;right:6px;background:#238636;color:#fff;border:none;padding:5px 14px;border-radius:4px;cursor:pointer;font-size:12px;font-family:Consolas,monospace;z-index:1;transition:all 0.2s}
+.copy-btn:hover{background:#2ea043;transform:scale(1.05)}
 .copy-btn.copied{background:#58a6ff}
-.file-label{position:absolute;top:5px;left:8px;color:#8b949e;font-size:11px;font-family:Consolas,monospace}
-.section{margin-bottom:10px;border:1px solid #30363d;border-radius:6px;overflow:hidden}
-.section-head{background:#161b22;padding:8px 12px;cursor:pointer;color:#7ee787;font-weight:bold;display:flex;justify-content:space-between;align-items:center}
+.file-label{position:absolute;top:8px;left:10px;color:#f0883e;font-size:12px;font-family:Consolas,monospace;font-weight:bold}
+.section{margin-bottom:8px;border:1px solid #30363d;border-radius:6px;overflow:hidden}
+.section-head{background:#161b22;padding:10px 14px;cursor:pointer;color:#7ee787;font-weight:bold;display:flex;justify-content:space-between;align-items:center;user-select:none}
 .section-head:hover{background:#1c2333}
 .section-body{display:none;padding:10px}
 .section.open .section-body{display:block}
-.section-head::after{content:'▶';font-size:12px;transition:transform 0.2s}
+.section-head::after{content:'▶';font-size:12px}
 .section.open .section-head::after{content:'▼'}
-.toast{position:fixed;bottom:20px;right:20px;background:#238636;color:#fff;padding:10px 20px;border-radius:6px;display:none;font-size:14px;z-index:999}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#238636;color:#fff;padding:12px 24px;border-radius:8px;display:none;font-size:14px;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,0.4)}
+.search-box{background:#161b22;color:#c9d1d9;border:1px solid #30363d;padding:8px 14px;border-radius:6px;font-size:14px;font-family:Consolas,monospace;width:250px;margin-left:8px}
+.search-box::placeholder{color:#484f58}
+.highlight{background:#e3b341;color:#000;padding:0 2px;border-radius:2px}
+.quick-nav{display:none;text-align:center;margin-bottom:10px;flex-wrap:wrap;justify-content:center;gap:4px}
+.quick-nav a{color:#58a6ff;text-decoration:none;font-size:12px;padding:4px 8px;background:#161b22;border:1px solid #30363d;border-radius:4px;cursor:pointer}
+.quick-nav a:hover{background:#30363d}
+.quick-nav a.active-nav{background:#238636;border-color:#238636;color:#fff}
 </style>
 </head>
 <body>
 
 <h1>WT LAB EXAM PREP</h1>
+
 <div class="top">
 <select id="weekSelect" onchange="showWeek(this.value)">
 <option value="">-- Select Week --</option>
@@ -50,13 +62,38 @@ h3{color:#7ee787;margin:10px 0 5px}
 <option value="w13">Week 13: Checkout Process</option>
 <option value="w14">Week 14: Deployment</option>
 </select>
+<input type="text" class="search-box" id="searchBox" placeholder="Search..." oninput="searchContent(this.value)">
+</div>
+
+<div class="quick-nav" id="quickNav">
+<a onclick="showWeek('w1')">W1</a>
+<a onclick="showWeek('w2')">W2</a>
+<a onclick="showWeek('w3')">W3</a>
+<a onclick="showWeek('w4')">W4</a>
+<a onclick="showWeek('w5')">W5</a>
+<a onclick="showWeek('w6')">W6</a>
+<a onclick="showWeek('w7')">W7</a>
+<a onclick="showWeek('w8')">W8</a>
+<a onclick="showWeek('w9')">W9</a>
+<a onclick="showWeek('w10')">W10</a>
+<a onclick="showWeek('w11')">W11</a>
+<a onclick="showWeek('w12')">W12</a>
+<a onclick="showWeek('w13')">W13</a>
+<a onclick="showWeek('w14')">W14</a>
+</div>
+
+<div class="toolbar" id="toolbar">
+<button onclick="expandAll()">Expand All</button>
+<button onclick="collapseAll()">Collapse All</button>
+<button onclick="copyAllCode()">Copy ALL Code</button>
+<button onclick="copyTheory()">Copy Theory</button>
 </div>
 
 <div id="toast" class="toast">Copied!</div>
 
 <!-- ==================== WEEK 1 ==================== -->
 <div class="week" id="w1">
-<h2>WEEK 1: HTML Frames - Online Book Store</h2>
+<h2>WEEK 1: HTML Frames <button class="copy-all-btn" onclick="copyWeekCode('w1')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -148,7 +185,7 @@ h3{color:#7ee787;margin:10px 0 5px}
 
 <!-- ==================== WEEK 2 ==================== -->
 <div class="week" id="w2">
-<h2>WEEK 2: CSS Styling</h2>
+<h2>WEEK 2: CSS Styling <button class="copy-all-btn" onclick="copyWeekCode('w2')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -234,7 +271,7 @@ body.footer {
 
 <!-- ==================== WEEK 3 ==================== -->
 <div class="week" id="w3">
-<h2>WEEK 3: JavaScript - Forms &amp; Dynamic Loading</h2>
+<h2>WEEK 3: JavaScript Forms <button class="copy-all-btn" onclick="copyWeekCode('w3')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -364,7 +401,7 @@ function loadBook(id) {
 
 <!-- ==================== WEEK 4 ==================== -->
 <div class="week" id="w4">
-<h2>WEEK 4: Shopping Cart</h2>
+<h2>WEEK 4: Shopping Cart <button class="copy-all-btn" onclick="copyWeekCode('w4')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -428,7 +465,7 @@ function displayCart() {
 
 <!-- ==================== WEEK 5 ==================== -->
 <div class="week" id="w5">
-<h2>WEEK 5: XML - Book Catalog</h2>
+<h2>WEEK 5: XML Book Catalog <button class="copy-all-btn" onclick="copyWeekCode('w5')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -478,7 +515,7 @@ function displayCart() {
 
 <!-- ==================== WEEK 6 ==================== -->
 <div class="week" id="w6">
-<h2>WEEK 6: XML - User Account</h2>
+<h2>WEEK 6: XML User Account <button class="copy-all-btn" onclick="copyWeekCode('w6')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -523,7 +560,7 @@ function displayCart() {
 
 <!-- ==================== WEEK 7 ==================== -->
 <div class="week" id="w7">
-<h2>WEEK 7: Apache Tomcat Setup in Eclipse</h2>
+<h2>WEEK 7: Apache Tomcat Setup</h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory (Steps)</div>
@@ -543,7 +580,7 @@ function displayCart() {
 
 <!-- ==================== WEEK 8 ==================== -->
 <div class="week" id="w8">
-<h2>WEEK 8: Servlet - Book Retrieval</h2>
+<h2>WEEK 8: Servlet - Book Retrieval <button class="copy-all-btn" onclick="copyWeekCode('w8')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -624,7 +661,7 @@ INSERT INTO books VALUES(2,'Web Technology','Uttam Roy',380,'Web');</pre>
 
 <!-- ==================== WEEK 9 ==================== -->
 <div class="week" id="w9">
-<h2>WEEK 9: User Authentication (Servlet + JSP)</h2>
+<h2>WEEK 9: User Authentication <button class="copy-all-btn" onclick="copyWeekCode('w9')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -753,7 +790,7 @@ INSERT INTO users VALUES(1,'admin','admin123','admin@bookstore.com');</pre>
 
 <!-- ==================== WEEK 10 ==================== -->
 <div class="week" id="w10">
-<h2>WEEK 10: Hibernate Entity Mapping</h2>
+<h2>WEEK 10: Hibernate Mapping <button class="copy-all-btn" onclick="copyWeekCode('w10')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -867,7 +904,7 @@ public class User {
 
 <!-- ==================== WEEK 11 ==================== -->
 <div class="week" id="w11">
-<h2>WEEK 11: Hibernate CRUD Operations</h2>
+<h2>WEEK 11: Hibernate CRUD <button class="copy-all-btn" onclick="copyWeekCode('w11')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -960,7 +997,7 @@ public class BookDAO {
 
 <!-- ==================== WEEK 12 ==================== -->
 <div class="week" id="w12">
-<h2>WEEK 12: JavaScript + Servlet Integration (AJAX Cart)</h2>
+<h2>WEEK 12: AJAX + Servlet <button class="copy-all-btn" onclick="copyWeekCode('w12')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -1062,7 +1099,7 @@ public class CartServlet extends HttpServlet {
 
 <!-- ==================== WEEK 13 ==================== -->
 <div class="week" id="w13">
-<h2>WEEK 13: Checkout Process (Servlet + JSP)</h2>
+<h2>WEEK 13: Checkout Process <button class="copy-all-btn" onclick="copyWeekCode('w13')">Copy All Code</button></h2>
 
 <div class="section open">
 <div class="section-head" onclick="toggle(this)">Theory</div>
@@ -1181,55 +1218,159 @@ public class CheckoutServlet extends HttpServlet {
 
 <!-- ==================== JAVASCRIPT ==================== -->
 <script>
+var currentWeek = '';
+
 function showWeek(id) {
     var weeks = document.querySelectorAll('.week');
-    for (var i = 0; i < weeks.length; i++) {
-        weeks[i].classList.remove('active');
-    }
+    for (var i = 0; i < weeks.length; i++) weeks[i].classList.remove('active');
     if (id) {
         document.getElementById(id).classList.add('active');
+        currentWeek = id;
+        document.getElementById('weekSelect').value = id;
     }
+    document.getElementById('toolbar').style.display = id ? 'block' : 'none';
+    document.getElementById('quickNav').style.display = 'flex';
+    // highlight active nav
+    var navs = document.querySelectorAll('.quick-nav a');
+    for (var i = 0; i < navs.length; i++) {
+        navs[i].classList.remove('active-nav');
+        if (navs[i].textContent === id.toUpperCase().replace('W','W')) {
+            navs[i].classList.add('active-nav');
+        }
+    }
+    // match nav button
+    navs.forEach(function(a, idx) {
+        var wid = 'w' + (idx + 1);
+        if (wid === id) a.classList.add('active-nav');
+        else a.classList.remove('active-nav');
+    });
 }
 
 function toggle(el) {
     el.parentElement.classList.toggle('open');
 }
 
-function copyCode(btn) {
-    var pre = btn.parentElement.querySelector('pre');
-    var text = pre.textContent;
-    // decode HTML entities for proper copy
+function expandAll() {
+    var week = document.getElementById(currentWeek);
+    if (!week) return;
+    var sections = week.querySelectorAll('.section');
+    sections.forEach(function(s) { s.classList.add('open'); });
+}
+
+function collapseAll() {
+    var week = document.getElementById(currentWeek);
+    if (!week) return;
+    var sections = week.querySelectorAll('.section');
+    sections.forEach(function(s) { s.classList.remove('open'); });
+}
+
+function decodeHTML(text) {
     var ta = document.createElement('textarea');
     ta.innerHTML = text;
-    var decoded = ta.value;
+    return ta.value;
+}
 
+function doCopy(text) {
     if (navigator.clipboard) {
-        navigator.clipboard.writeText(decoded).then(function() {
-            showToast(btn);
-        });
+        navigator.clipboard.writeText(text);
     } else {
-        // fallback
         var temp = document.createElement('textarea');
-        temp.value = decoded;
+        temp.value = text;
+        temp.style.position = 'fixed';
+        temp.style.left = '-9999px';
         document.body.appendChild(temp);
         temp.select();
         document.execCommand('copy');
         document.body.removeChild(temp);
-        showToast(btn);
     }
 }
 
-function showToast(btn) {
-    btn.textContent = 'Copied!';
-    btn.classList.add('copied');
-    var toast = document.getElementById('toast');
-    toast.style.display = 'block';
-    setTimeout(function() {
-        toast.style.display = 'none';
-        btn.textContent = 'Copy';
-        btn.classList.remove('copied');
-    }, 1500);
+function copyCode(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = decodeHTML(pre.textContent);
+    doCopy(text);
+    showToast(btn, 'Copied!');
 }
+
+function copyWeekCode(weekId) {
+    var week = document.getElementById(weekId);
+    var pres = week.querySelectorAll('pre');
+    var allCode = '';
+    var labels = week.querySelectorAll('.file-label');
+    for (var i = 0; i < pres.length; i++) {
+        var label = labels[i] ? labels[i].textContent : 'Code';
+        allCode += '// ===== ' + label + ' =====\n';
+        allCode += decodeHTML(pres[i].textContent) + '\n\n';
+    }
+    doCopy(allCode);
+    var btn = week.querySelector('.copy-all-btn');
+    showToast(btn, 'All code copied!');
+}
+
+function copyAllCode() {
+    if (!currentWeek) return;
+    copyWeekCode(currentWeek);
+}
+
+function copyTheory() {
+    if (!currentWeek) return;
+    var week = document.getElementById(currentWeek);
+    var theory = week.querySelector('.theory');
+    if (theory) {
+        doCopy(theory.textContent);
+        showToast(null, 'Theory copied!');
+    }
+}
+
+function showToast(btn, msg) {
+    var toast = document.getElementById('toast');
+    toast.textContent = msg || 'Copied!';
+    toast.style.display = 'block';
+    if (btn) {
+        var orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+            btn.textContent = orig;
+            btn.classList.remove('copied');
+        }, 1500);
+    }
+    setTimeout(function() { toast.style.display = 'none'; }, 1500);
+}
+
+function searchContent(query) {
+    if (!query || query.length < 2) return;
+    query = query.toLowerCase();
+    // show all weeks that match, expand matching sections
+    var weeks = document.querySelectorAll('.week');
+    var found = false;
+    weeks.forEach(function(w) {
+        if (w.textContent.toLowerCase().indexOf(query) !== -1) {
+            if (!found) {
+                showWeek(w.id);
+                found = true;
+            }
+            // expand sections containing match
+            var sections = w.querySelectorAll('.section');
+            sections.forEach(function(s) {
+                if (s.textContent.toLowerCase().indexOf(query) !== -1) {
+                    s.classList.add('open');
+                }
+            });
+        }
+    });
+}
+
+// Keyboard shortcut: Ctrl+K to focus search
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        document.getElementById('searchBox').focus();
+    }
+});
+
+// Show quick nav on load
+document.getElementById('quickNav').style.display = 'flex';
 </script>
 
 </body>
