@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BDC Lab Exam</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Consolas,monospace;background:#0d1117;color:#c9d1d9;padding:15px;line-height:1.6}
+h1{color:#58a6ff;text-align:center;font-size:20px;margin-bottom:5px}
+.top{text-align:center;margin-bottom:12px}
+select{background:#161b22;color:#58a6ff;border:1px solid #30363d;padding:10px 20px;font-size:16px;border-radius:6px;cursor:pointer;font-family:Consolas,monospace}
+.toolbar{text-align:center;margin-bottom:12px;display:none}
+.toolbar button{background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:6px 14px;margin:3px;border-radius:4px;cursor:pointer;font-family:Consolas,monospace;font-size:12px}
+.toolbar button:hover{background:#30363d}
+.week{display:none}
+.week.active{display:block}
+h2{color:#f0883e;padding:8px;background:#161b22;border-left:4px solid #f0883e;margin:15px 0 8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.copy-all-btn{background:#238636;color:#fff;border:none;padding:5px 14px;border-radius:4px;cursor:pointer;font-size:12px;font-family:Consolas,monospace}
+.copy-all-btn:hover{background:#2ea043}
+.theory{background:#1c2333;padding:10px;border-radius:6px;margin:8px 0;border-left:3px solid #58a6ff;line-height:1.7}
+.code-block{position:relative;margin:8px 0}
+.code-block pre{background:#161b22;padding:12px;padding-top:38px;border-radius:6px;overflow-x:auto;font-size:13px;border:1px solid #30363d;line-height:1.5;white-space:pre;tab-size:4;cursor:pointer;transition:border-color 0.2s,box-shadow 0.2s}
+.code-block pre:hover{border-color:#238636;box-shadow:0 0 0 1px #238636}
+.copy-btn{position:absolute;top:6px;right:6px;background:#238636;color:#fff;border:none;padding:5px 14px;border-radius:4px;cursor:pointer;font-size:12px;font-family:Consolas,monospace;z-index:1;transition:all 0.2s}
+.copy-btn:hover{background:#2ea043;transform:scale(1.05)}
+.copy-btn.copied{background:#58a6ff}
+.file-label{position:absolute;top:8px;left:10px;color:#f0883e;font-size:12px;font-family:Consolas,monospace;font-weight:bold}
+.section{margin-bottom:8px;border:1px solid #30363d;border-radius:6px;overflow:hidden}
+.section-head{background:#161b22;padding:10px 14px;cursor:pointer;color:#7ee787;font-weight:bold;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.section-head:hover{background:#1c2333}
+.section-body{display:none;padding:10px}
+.section.open .section-body{display:block}
+.section-head::after{content:'▶';font-size:12px}
+.section.open .section-head::after{content:'▼'}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#238636;color:#fff;padding:12px 24px;border-radius:8px;display:none;font-size:14px;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,0.4)}
+.search-box{background:#161b22;color:#c9d1d9;border:1px solid #30363d;padding:8px 14px;border-radius:6px;font-size:14px;font-family:Consolas,monospace;width:250px;margin-left:8px}
+.search-box::placeholder{color:#484f58}
+.quick-nav{display:flex;text-align:center;margin-bottom:10px;flex-wrap:wrap;justify-content:center;gap:4px}
+.quick-nav a{color:#58a6ff;text-decoration:none;font-size:12px;padding:4px 8px;background:#161b22;border:1px solid #30363d;border-radius:4px;cursor:pointer}
+.quick-nav a:hover{background:#30363d}
+.quick-nav a.active-nav{background:#238636;border-color:#238636;color:#fff}
+.copy-history{position:fixed;top:10px;right:10px;width:260px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:10px;display:none;z-index:998;max-height:300px;overflow-y:auto;font-size:11px}
+.copy-history h4{color:#58a6ff;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.copy-history .ch-item{padding:5px 8px;margin:3px 0;background:#0d1117;border-radius:4px;cursor:pointer;color:#8b949e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid transparent}
+.copy-history .ch-item:hover{border-color:#238636;color:#c9d1d9}
+.shortcut-hint{position:fixed;bottom:10px;left:10px;color:#484f58;font-size:11px;z-index:50}
+</style>
+</head>
+<body>
+
+<h1>BDC LAB EXAM PREP</h1>
+
+<div class="top">
+<select id="weekSelect" onchange="showWeek(this.value)">
+<option value="">-- Select Experiment --</option>
+<option value="w1">1. HDFS Storage</option>
+<option value="w2">2. MapReduce Programming</option>
+<option value="w3">3. Hive (NoSQL Queries)</option>
+<option value="w4">4. Pig (Latin Scripting)</option>
+<option value="w5">5. SQOOP</option>
+<option value="w6">6. ARIMA Model</option>
+</select>
+<input type="text" class="search-box" id="searchBox" placeholder="Search..." oninput="searchContent(this.value)">
+</div>
+
+<div class="quick-nav" id="quickNav">
+<a onclick="showWeek('w1')">HDFS</a>
+<a onclick="showWeek('w2')">MapReduce</a>
+<a onclick="showWeek('w3')">Hive</a>
+<a onclick="showWeek('w4')">Pig</a>
+<a onclick="showWeek('w5')">SQOOP</a>
+<a onclick="showWeek('w6')">ARIMA</a>
+</div>
+
+<div class="toolbar" id="toolbar">
+<button onclick="expandAll()">Expand All</button>
+<button onclick="collapseAll()">Collapse All</button>
+<button onclick="copyAllCode()">Copy ALL Code</button>
+<button onclick="copyTheory()">Copy Theory</button>
+<button onclick="toggleHistory()">History</button>
+</div>
+
+<div id="toast" class="toast">Copied!</div>
+
+<div class="copy-history" id="copyHistory">
+<h4>Copy History <span style="cursor:pointer;color:#f85149" onclick="clearHistory()">Clear</span></h4>
+<div id="historyList"></div>
+</div>
+
+<div class="shortcut-hint">Keys: 1-9 = copy code blocks | H = history | E = expand | C = collapse | Arrow keys = switch</div>
+
+<!-- ==================== 1. HDFS ==================== -->
+<div class="week" id="w1">
+<h2>1. HDFS Storage <button class="copy-all-btn" onclick="copyWeekCode('w1')">Copy All Code</button></h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>HDFS</b> = Hadoop Distributed File System, stores large files across multiple machines.<br>
+• HDFS follows <b>master-slave architecture</b>: NameNode (master) + DataNodes (slaves).<br>
+• Default block size is <b>128 MB</b>. Data is replicated (default replication factor = 3).<br>
+• HDFS is designed for <b>write-once, read-many</b> access pattern.<br>
+• HDFS commands are similar to Linux commands, prefixed with <b>hdfs dfs</b> or <b>hadoop fs</b>.<br>
+• <b>NameNode</b> stores metadata (file names, block locations). <b>DataNode</b> stores actual data.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">A. Create Directory Structure in HDFS</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">HDFS Commands</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Start Hadoop services
+start-dfs.sh
+start-yarn.sh
+
+# I. Create directory structure in HDFS
+hdfs dfs -mkdir /user
+hdfs dfs -mkdir /user/student
+hdfs dfs -mkdir /user/student/input
+hdfs dfs -mkdir -p /user/student/data/books
+
+# Verify directory creation
+hdfs dfs -ls /user/student
+
+# Create local files using Linux commands
+echo "Hello Hadoop World" > file1.txt
+echo "Big Data Analytics" > file2.txt
+cat file1.txt
+
+# II. Move file from local machine to HDFS
+hdfs dfs -put file1.txt /user/student/input/
+hdfs dfs -put file2.txt /user/student/input/
+
+# OR use copyFromLocal
+hdfs dfs -copyFromLocal file1.txt /user/student/input/
+
+# Move multiple files
+hdfs dfs -put *.txt /user/student/input/</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">B. Viewing Data Contents in HDFS</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">View Commands</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># a) See contents of files in HDFS
+hdfs dfs -cat /user/student/input/file1.txt
+
+# View with paging (large files)
+hdfs dfs -cat /user/student/input/file1.txt | head -20
+
+# b) List files/directories in HDFS
+hdfs dfs -ls /user/student/input/
+hdfs dfs -ls -R /user/student/
+
+# Check file size
+hdfs dfs -du -s /user/student/input/
+
+# View last few lines
+hdfs dfs -tail /user/student/input/file1.txt
+
+# Count files, directories, bytes
+hdfs dfs -count /user/student/input/</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">C. Copy Files from HDFS to Local</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">Get Commands</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Copy file from HDFS to local file system
+hdfs dfs -get /user/student/input/file1.txt /home/student/
+
+# OR use copyToLocal
+hdfs dfs -copyToLocal /user/student/input/file1.txt /home/student/
+
+# Copy entire directory
+hdfs dfs -get /user/student/input/ /home/student/localdir/
+
+# Delete file from HDFS
+hdfs dfs -rm /user/student/input/file1.txt
+
+# Delete directory from HDFS
+hdfs dfs -rm -r /user/student/input/
+
+# Move file within HDFS
+hdfs dfs -mv /user/student/input/file1.txt /user/student/data/
+
+# Copy file within HDFS
+hdfs dfs -cp /user/student/input/file1.txt /user/student/data/</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== 2. MapReduce ==================== -->
+<div class="week" id="w2">
+<h2>2. MapReduce Programming <button class="copy-all-btn" onclick="copyWeekCode('w2')">Copy All Code</button></h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>MapReduce</b> is a programming model for processing large datasets in parallel.<br>
+• Two phases: <b>Map</b> (splits input into key-value pairs) → <b>Reduce</b> (aggregates values by key).<br>
+• Between Map and Reduce, there is a <b>Shuffle &amp; Sort</b> phase.<br>
+• <b>Mapper</b>: input → (key, value) pairs. <b>Reducer</b>: (key, [values]) → aggregated output.<br>
+• Hadoop handles distribution, fault tolerance, and parallelism automatically.<br>
+• Input/Output uses <b>TextInputFormat</b> and <b>TextOutputFormat</b> by default.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">A. Word Count - WordCount.java</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">WordCount.java</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>import java.io.IOException;
+import java.util.StringTokenizer;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class WordCount {
+
+    // MAPPER
+    public static class TokenizerMapper
+            extends Mapper&lt;Object, Text, Text, IntWritable&gt; {
+
+        private final static IntWritable one = new IntWritable(1);
+        private Text word = new Text();
+
+        public void map(Object key, Text value, Context context)
+                throws IOException, InterruptedException {
+            StringTokenizer itr = new StringTokenizer(value.toString());
+            while (itr.hasMoreTokens()) {
+                word.set(itr.nextToken());
+                context.write(word, one);
+            }
+        }
+    }
+
+    // REDUCER
+    public static class IntSumReducer
+            extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
+
+        private IntWritable result = new IntWritable();
+
+        public void reduce(Text key, Iterable&lt;IntWritable&gt; values, Context context)
+                throws IOException, InterruptedException {
+            int sum = 0;
+            for (IntWritable val : values) {
+                sum += val.get();
+            }
+            result.set(sum);
+            context.write(key, result);
+        }
+    }
+
+    // DRIVER
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        Job job = Job.getInstance(conf, "word count");
+        job.setJarByClass(WordCount.class);
+        job.setMapperClass(TokenizerMapper.class);
+        job.setCombinerClass(IntSumReducer.class);
+        job.setReducerClass(IntSumReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">Run Word Count Commands</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">Run Commands</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Create input text file
+echo "hadoop is great hadoop is fast big data hadoop" > input.txt
+
+# Put input file to HDFS
+hdfs dfs -mkdir -p /user/student/wordcount/input
+hdfs dfs -put input.txt /user/student/wordcount/input/
+
+# Compile WordCount.java
+hadoop com.sun.tools.javac.Main WordCount.java
+
+# Create JAR file
+jar cf wordcount.jar WordCount*.class
+
+# Run the MapReduce job
+hadoop jar wordcount.jar WordCount /user/student/wordcount/input /user/student/wordcount/output
+
+# View output
+hdfs dfs -cat /user/student/wordcount/output/part-r-00000</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">B. Most Frequent Words - TopWords.java</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">TopWords.java</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>import java.io.IOException;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.WritableComparator;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class TopWords {
+
+    // MAPPER: Swap key-value from word count output
+    public static class SwapMapper
+            extends Mapper&lt;Object, Text, IntWritable, Text&gt; {
+
+        public void map(Object key, Text value, Context context)
+                throws IOException, InterruptedException {
+            String[] parts = value.toString().split("\t");
+            if (parts.length == 2) {
+                int count = Integer.parseInt(parts[1].trim());
+                context.write(new IntWritable(count), new Text(parts[0]));
+            }
+        }
+    }
+
+    // Sort in descending order
+    public static class DescendingComparator extends WritableComparator {
+        protected DescendingComparator() {
+            super(IntWritable.class, true);
+        }
+        public int compare(WritableComparable a, WritableComparable b) {
+            return -1 * super.compare(a, b);
+        }
+    }
+
+    // REDUCER: Just output as-is (already sorted)
+    public static class TopReducer
+            extends Reducer&lt;IntWritable, Text, Text, IntWritable&gt; {
+
+        public void reduce(IntWritable key, Iterable&lt;Text&gt; values, Context context)
+                throws IOException, InterruptedException {
+            for (Text val : values) {
+                context.write(val, key);
+            }
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        Job job = Job.getInstance(conf, "top words");
+        job.setJarByClass(TopWords.class);
+        job.setMapperClass(SwapMapper.class);
+        job.setReducerClass(TopReducer.class);
+        job.setSortComparatorClass(DescendingComparator.class);
+        job.setMapOutputKeyClass(IntWritable.class);
+        job.setMapOutputValueClass(Text.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">Run Top Words Commands</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">Run Commands</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Use output of WordCount as input for TopWords
+hadoop com.sun.tools.javac.Main TopWords.java
+jar cf topwords.jar TopWords*.class
+hadoop jar topwords.jar TopWords /user/student/wordcount/output /user/student/topwords/output
+
+# View sorted output (most frequent first)
+hdfs dfs -cat /user/student/topwords/output/part-r-00000</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== 3. Hive ==================== -->
+<div class="week" id="w3">
+<h2>3. Hive (NoSQL Queries) <button class="copy-all-btn" onclick="copyWeekCode('w3')">Copy All Code</button></h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>Hive</b> is a data warehouse tool built on top of Hadoop for SQL-like queries (HiveQL).<br>
+• Hive converts queries to <b>MapReduce jobs</b> internally.<br>
+• Uses <b>HiveQL</b> which is similar to SQL (SELECT, WHERE, GROUP BY, JOIN etc.).<br>
+• Hive stores metadata in <b>Metastore</b> (usually Derby or MySQL).<br>
+• Best for <b>batch processing</b> of large datasets, NOT for real-time queries.<br>
+• Tables can be <b>managed</b> (Hive controls data) or <b>external</b> (data stays in HDFS).
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">i. Create Table in Hive</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">Hive Commands</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Start Hive shell
+hive
+
+# Create database
+CREATE DATABASE IF NOT EXISTS bdclab;
+USE bdclab;
+
+# i. Create the user_data table
+CREATE TABLE user_data (
+    data_date STRING,
+    user_id STRING,
+    properties STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+STORED AS TEXTFILE;
+
+# Verify table
+DESCRIBE user_data;
+SHOW TABLES;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">ii. Load Sample Data</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">Load Data</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Create sample data file locally
+# Format: data_date \t user_id \t properties
+
+echo -e "2025-01-01\tU001\tAge=21;state=CA;gender=M" > userdata.txt
+echo -e "2025-01-01\tU002\tAge=25;state=TX;gender=F" >> userdata.txt
+echo -e "2025-01-02\tU003\tAge=30;state=CA;gender=M" >> userdata.txt
+echo -e "2025-01-02\tU004\tAge=22;state=NY;gender=F" >> userdata.txt
+echo -e "2025-01-03\tU005\tAge=28;state=TX;gender=M" >> userdata.txt
+echo -e "2025-01-03\tU006\tAge=35;state=NY;gender=F" >> userdata.txt
+
+# Load data into Hive table
+LOAD DATA LOCAL INPATH '/home/student/userdata.txt' INTO TABLE user_data;
+
+# Verify data loaded
+SELECT * FROM user_data;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">iii. Property Analysis (Min, Max, Unique)</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">Property Queries</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Extract Age from properties and find min, max, unique count
+SELECT
+    MIN(CAST(REGEXP_EXTRACT(properties, 'Age=([0-9]+)', 1) AS INT)) AS min_age,
+    MAX(CAST(REGEXP_EXTRACT(properties, 'Age=([0-9]+)', 1) AS INT)) AS max_age,
+    COUNT(DISTINCT REGEXP_EXTRACT(properties, 'Age=([0-9]+)', 1)) AS unique_ages
+FROM user_data;
+
+# Extract state and find unique states
+SELECT
+    REGEXP_EXTRACT(properties, 'state=([A-Z]+)', 1) AS state,
+    COUNT(*) AS unique_count
+FROM user_data
+GROUP BY REGEXP_EXTRACT(properties, 'state=([A-Z]+)', 1);
+
+# Extract gender stats
+SELECT
+    REGEXP_EXTRACT(properties, 'gender=([A-Z])', 1) AS gender,
+    COUNT(*) AS count
+FROM user_data
+GROUP BY REGEXP_EXTRACT(properties, 'gender=([A-Z])', 1);</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">iv. Count Per State</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">State Count</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Generate count per state
+SELECT
+    REGEXP_EXTRACT(properties, 'state=([A-Z]+)', 1) AS state,
+    COUNT(*) AS record_count
+FROM user_data
+GROUP BY REGEXP_EXTRACT(properties, 'state=([A-Z]+)', 1)
+ORDER BY record_count DESC;
+
+# Output:
+# CA    2
+# TX    2
+# NY    2</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== 4. Pig ==================== -->
+<div class="week" id="w4">
+<h2>4. Pig (Latin Scripting) <button class="copy-all-btn" onclick="copyWeekCode('w4')">Copy All Code</button></h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>Pig</b> is a high-level platform for creating MapReduce programs using <b>Pig Latin</b>.<br>
+• Pig Latin is a <b>data flow language</b> (not declarative like SQL).<br>
+• Key operations: <b>LOAD, FILTER, FOREACH, GROUP, ORDER, STORE, DUMP</b>.<br>
+• Pig converts scripts to MapReduce jobs automatically.<br>
+• Two modes: <b>Local mode</b> (pig -x local) and <b>MapReduce mode</b> (pig -x mapreduce).<br>
+• <b>PigStorage</b> handles delimited files. Default delimiter is tab ('\t').
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">Sample Data Setup</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">Setup Commands</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Create sample log file (tab delimited)
+# site  hour_of_day  page_views  data_date
+echo -e "google\t10\t500\t2025-01-01" > logs.txt
+echo -e "yahoo\t10\t300\t2025-01-01" >> logs.txt
+echo -e "google\t11\t600\t2025-01-01" >> logs.txt
+echo -e "yahoo\t11\t200\t2025-01-01" >> logs.txt
+echo -e "google\t10\t700\t2025-01-02" >> logs.txt
+echo -e "yahoo\t10\t400\t2025-01-02" >> logs.txt
+echo -e "google\t11\t800\t2025-01-02" >> logs.txt
+echo -e "yahoo\t11\t350\t2025-01-02" >> logs.txt
+
+# Load to HDFS
+hdfs dfs -mkdir -p /data/pig/simple_logs
+hdfs dfs -put logs.txt /data/pig/simple_logs/
+
+# Start Pig shell
+pig</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">i. Total Views Per Hour Per Day</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">views_per_hour_day.pig</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>-- Load the data
+logs = LOAD '/data/pig/simple_logs/logs.txt' USING PigStorage('\t')
+       AS (site:chararray, hour_of_day:int, page_views:int, data_date:chararray);
+
+-- i. Total views per hour per day
+grouped_hour_day = GROUP logs BY (hour_of_day, data_date);
+views_per_hour_day = FOREACH grouped_hour_day GENERATE
+                     group.hour_of_day AS hour,
+                     group.data_date AS date,
+                     SUM(logs.page_views) AS total_views;
+
+-- Display result
+DUMP views_per_hour_day;
+
+-- Store result
+STORE views_per_hour_day INTO '/data/pig/output/hour_day' USING PigStorage('\t');</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">ii. Total Views Per Day</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">views_per_day.pig</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>-- Load the data
+logs = LOAD '/data/pig/simple_logs/logs.txt' USING PigStorage('\t')
+       AS (site:chararray, hour_of_day:int, page_views:int, data_date:chararray);
+
+-- ii. Total views per day
+grouped_day = GROUP logs BY data_date;
+views_per_day = FOREACH grouped_day GENERATE
+                group AS date,
+                SUM(logs.page_views) AS total_views;
+
+DUMP views_per_day;
+STORE views_per_day INTO '/data/pig/output/per_day' USING PigStorage('\t');</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">iii. Total Counts Per Hour Across All Days</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">views_per_hour.pig</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>-- Load the data
+logs = LOAD '/data/pig/simple_logs/logs.txt' USING PigStorage('\t')
+       AS (site:chararray, hour_of_day:int, page_views:int, data_date:chararray);
+
+-- iii. Total counts of each hour across all days
+grouped_hour = GROUP logs BY hour_of_day;
+views_per_hour = FOREACH grouped_hour GENERATE
+                 group AS hour,
+                 SUM(logs.page_views) AS total_views;
+
+DUMP views_per_hour;
+STORE views_per_hour INTO '/data/pig/output/per_hour' USING PigStorage('\t');</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">iv. Word Count in Pig</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">wordcount.pig</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>-- iv. Word Count using Pig
+lines = LOAD '/user/student/wordcount/input/input.txt' AS (line:chararray);
+
+-- Tokenize each line into words
+words = FOREACH lines GENERATE FLATTEN(TOKENIZE(line)) AS word;
+
+-- Group by word
+grouped = GROUP words BY word;
+
+-- Count occurrences
+wordcount = FOREACH grouped GENERATE group AS word, COUNT(words) AS count;
+
+-- Sort by count descending
+sorted = ORDER wordcount BY count DESC;
+
+DUMP sorted;
+STORE sorted INTO '/data/pig/output/wordcount' USING PigStorage('\t');</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== 5. SQOOP ==================== -->
+<div class="week" id="w5">
+<h2>5. SQOOP <button class="copy-all-btn" onclick="copyWeekCode('w5')">Copy All Code</button></h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>SQOOP</b> = SQL-to-Hadoop. Tool for transferring data between RDBMS and HDFS.<br>
+• Two main operations: <b>sqoop import</b> (SQL → HDFS/Hive) and <b>sqoop export</b> (HDFS → SQL).<br>
+• Sqoop uses <b>MapReduce</b> internally for parallel data transfer.<br>
+• Supports MySQL, Oracle, PostgreSQL, SQL Server etc.<br>
+• <b>--connect</b>: JDBC URL, <b>--username/--password</b>: DB credentials.<br>
+• <b>--hive-import</b> flag directly imports SQL data into Hive table.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">Setup: Create MySQL Table</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">MySQL Setup</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Login to MySQL
+mysql -u root -p
+
+# Create database and table
+CREATE DATABASE bdclab;
+USE bdclab;
+
+CREATE TABLE books (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(100),
+    author VARCHAR(100),
+    price INT,
+    genre VARCHAR(50)
+);
+
+INSERT INTO books VALUES (1, 'Java Programming', 'Herbert Schildt', 450, 'Programming');
+INSERT INTO books VALUES (2, 'Web Technology', 'Uttam Roy', 380, 'Web');
+INSERT INTO books VALUES (3, 'Big Data', 'Tom White', 500, 'Data');
+INSERT INTO books VALUES (4, 'DBMS', 'Navathe', 320, 'Database');
+
+SELECT * FROM books;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">I. Create Table in Hive</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">Hive Table</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Start Hive
+hive
+
+# Create Hive table (same structure as MySQL table)
+CREATE TABLE IF NOT EXISTS books (
+    id INT,
+    title STRING,
+    author STRING,
+    price INT,
+    genre STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE;
+
+SHOW TABLES;
+DESCRIBE books;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">II. Import SQL Data into Hive using SQOOP</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">SQOOP Import</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Import MySQL table directly into Hive
+sqoop import \
+  --connect jdbc:mysql://localhost:3306/bdclab \
+  --username root \
+  --password password \
+  --table books \
+  --hive-import \
+  --hive-table books \
+  --m 1
+
+# Verify in Hive
+hive -e "SELECT * FROM books;"
+
+# Import to HDFS directory (alternative)
+sqoop import \
+  --connect jdbc:mysql://localhost:3306/bdclab \
+  --username root \
+  --password password \
+  --table books \
+  --target-dir /user/student/sqoop/books \
+  --m 1
+
+# Verify in HDFS
+hdfs dfs -cat /user/student/sqoop/books/part-m-00000</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">III. Export Hive Data to Local & SQL</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">SQOOP Export</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># First, create target table in MySQL for export
+mysql -u root -p -e "
+USE bdclab;
+CREATE TABLE books_export (
+    id INT,
+    title VARCHAR(100),
+    author VARCHAR(100),
+    price INT,
+    genre VARCHAR(50)
+);"
+
+# Export from HDFS/Hive to MySQL
+sqoop export \
+  --connect jdbc:mysql://localhost:3306/bdclab \
+  --username root \
+  --password password \
+  --table books_export \
+  --export-dir /user/hive/warehouse/books \
+  --input-fields-terminated-by ',' \
+  --m 1
+
+# Verify in MySQL
+mysql -u root -p -e "SELECT * FROM bdclab.books_export;"
+
+# Export Hive table data to local machine
+hive -e "SELECT * FROM books;" > /home/student/books_local.txt
+
+# Verify local file
+cat /home/student/books_local.txt</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== 6. ARIMA ==================== -->
+<div class="week" id="w6">
+<h2>6. ARIMA Model <button class="copy-all-btn" onclick="copyWeekCode('w6')">Copy All Code</button></h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>ARIMA</b> = AutoRegressive Integrated Moving Average. Used for <b>time series forecasting</b>.<br>
+• ARIMA(p, d, q): <b>p</b> = autoregressive order, <b>d</b> = differencing order, <b>q</b> = moving average order.<br>
+• <b>AR (p)</b>: Current value depends on previous p values.<br>
+• <b>I (d)</b>: Number of times data is differenced to make it stationary.<br>
+• <b>MA (q)</b>: Current value depends on previous q error terms.<br>
+• <b>Stationarity</b>: Mean and variance are constant over time. Required for ARIMA.<br>
+• Use <b>ACF</b> (AutoCorrelation Function) to find q, <b>PACF</b> (Partial ACF) to find p.<br>
+• <b>ADF test</b> (Augmented Dickey-Fuller) checks if data is stationary.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">ARIMA in Python</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">arima_model.py</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.stattools import adfuller
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+
+# Step 1: Create sample time series data
+np.random.seed(42)
+dates = pd.date_range(start='2024-01-01', periods=100, freq='D')
+data = np.cumsum(np.random.randn(100)) + 50
+ts = pd.Series(data, index=dates)
+
+print("Sample Data:")
+print(ts.head(10))
+
+# Step 2: Plot the time series
+plt.figure(figsize=(10, 4))
+plt.plot(ts)
+plt.title('Time Series Data')
+plt.xlabel('Date')
+plt.ylabel('Value')
+plt.savefig('timeseries.png')
+plt.show()
+
+# Step 3: Check stationarity using ADF test
+result = adfuller(ts)
+print('\nADF Test Results:')
+print(f'ADF Statistic: {result[0]:.4f}')
+print(f'p-value: {result[1]:.4f}')
+if result[1] &lt;= 0.05:
+    print('Data is STATIONARY (p &lt;= 0.05)')
+else:
+    print('Data is NOT stationary (p > 0.05), need differencing')
+
+# Step 4: Differencing to make stationary (if needed)
+ts_diff = ts.diff().dropna()
+
+# Step 5: Plot ACF and PACF to determine p and q
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+plot_acf(ts_diff, ax=axes[0], title='ACF')
+plot_pacf(ts_diff, ax=axes[1], title='PACF')
+plt.savefig('acf_pacf.png')
+plt.show()
+
+# Step 6: Fit ARIMA model (p=1, d=1, q=1)
+model = ARIMA(ts, order=(1, 1, 1))
+model_fit = model.fit()
+
+# Step 7: Model summary
+print('\nModel Summary:')
+print(model_fit.summary())
+
+# Step 8: Forecast next 10 days
+forecast = model_fit.forecast(steps=10)
+print('\nForecast for next 10 days:')
+print(forecast)
+
+# Step 9: Plot actual vs forecast
+plt.figure(figsize=(10, 4))
+plt.plot(ts, label='Actual')
+plt.plot(forecast, label='Forecast', color='red')
+plt.title('ARIMA Forecast')
+plt.legend()
+plt.savefig('forecast.png')
+plt.show()
+
+# Step 10: Model accuracy (AIC, BIC)
+print(f'\nAIC: {model_fit.aic:.2f}')
+print(f'BIC: {model_fit.bic:.2f}')</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">Run Commands</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">Terminal</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre># Install required libraries (if not installed)
+pip install pandas numpy matplotlib statsmodels
+
+# Run the ARIMA script
+python arima_model.py</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">ARIMA with Real Dataset (CSV)</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">arima_csv.py</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
+import matplotlib.pyplot as plt
+
+# Load CSV data
+# CSV should have columns: Date, Value
+df = pd.read_csv('data.csv', parse_dates=['Date'], index_col='Date')
+ts = df['Value']
+
+print("Dataset shape:", df.shape)
+print(df.head())
+
+# Split into train and test (80-20)
+train_size = int(len(ts) * 0.8)
+train = ts[:train_size]
+test = ts[train_size:]
+
+# Fit ARIMA model
+model = ARIMA(train, order=(2, 1, 2))
+model_fit = model.fit()
+
+# Predict
+predictions = model_fit.forecast(steps=len(test))
+
+# Plot
+plt.figure(figsize=(10, 4))
+plt.plot(train, label='Train')
+plt.plot(test, label='Test', color='green')
+plt.plot(test.index, predictions, label='Predicted', color='red')
+plt.title('ARIMA Prediction vs Actual')
+plt.legend()
+plt.savefig('arima_result.png')
+plt.show()
+
+# Calculate RMSE
+from sklearn.metrics import mean_squared_error
+import numpy as np
+rmse = np.sqrt(mean_squared_error(test, predictions))
+print(f'RMSE: {rmse:.4f}')</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+var currentWeek = '';
+var copyHistoryList = [];
+
+function showWeek(id) {
+    var weeks = document.querySelectorAll('.week');
+    for (var i = 0; i < weeks.length; i++) weeks[i].classList.remove('active');
+    if (id) {
+        document.getElementById(id).classList.add('active');
+        currentWeek = id;
+        document.getElementById('weekSelect').value = id;
+    }
+    document.getElementById('toolbar').style.display = id ? 'block' : 'none';
+    var navs = document.querySelectorAll('.quick-nav a');
+    navs.forEach(function(a, idx) {
+        var wid = 'w' + (idx + 1);
+        if (wid === id) a.classList.add('active-nav');
+        else a.classList.remove('active-nav');
+    });
+}
+
+function toggle(el) { el.parentElement.classList.toggle('open'); }
+
+function expandAll() {
+    var week = document.getElementById(currentWeek);
+    if (week) week.querySelectorAll('.section').forEach(function(s) { s.classList.add('open'); });
+}
+
+function collapseAll() {
+    var week = document.getElementById(currentWeek);
+    if (week) week.querySelectorAll('.section').forEach(function(s) { s.classList.remove('open'); });
+}
+
+function decodeHTML(text) {
+    var ta = document.createElement('textarea');
+    ta.innerHTML = text;
+    return ta.value;
+}
+
+function doCopy(text, label) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text);
+    } else {
+        var temp = document.createElement('textarea');
+        temp.value = text;
+        temp.style.position = 'fixed';
+        temp.style.left = '-9999px';
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+    }
+    if (label) {
+        copyHistoryList.unshift({ label: label, text: text, time: new Date().toLocaleTimeString() });
+        if (copyHistoryList.length > 20) copyHistoryList.pop();
+        renderHistory();
+    }
+}
+
+function copyCode(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var label = btn.parentElement.querySelector('.file-label');
+    var labelText = label ? label.textContent : 'Code';
+    doCopy(decodeHTML(pre.textContent), labelText);
+    showToast(btn, 'Copied!');
+}
+
+document.addEventListener('click', function(e) {
+    var pre = e.target.closest ? e.target.closest('.code-block pre') : null;
+    if (!pre) return;
+    if (e.target.classList.contains('copy-btn')) return;
+    var block = pre.closest('.code-block');
+    var btn = block.querySelector('.copy-btn');
+    var label = block.querySelector('.file-label');
+    doCopy(decodeHTML(pre.textContent), label ? label.textContent : 'Code');
+    showToast(btn, 'Copied!');
+});
+
+function copyWeekCode(weekId) {
+    var week = document.getElementById(weekId);
+    var pres = week.querySelectorAll('.code-block pre');
+    var labels = week.querySelectorAll('.file-label');
+    var allCode = '';
+    for (var i = 0; i < pres.length; i++) {
+        var label = labels[i] ? labels[i].textContent : 'Code';
+        allCode += '# ===== ' + label + ' =====\n';
+        allCode += decodeHTML(pres[i].textContent) + '\n\n';
+    }
+    doCopy(allCode, 'All code - ' + weekId.toUpperCase());
+    showToast(week.querySelector('.copy-all-btn'), 'All code copied!');
+}
+
+function copyAllCode() { if (currentWeek) copyWeekCode(currentWeek); }
+
+function copyTheory() {
+    if (!currentWeek) return;
+    var theory = document.getElementById(currentWeek).querySelector('.theory');
+    if (theory) { doCopy(theory.textContent, 'Theory'); showToast(null, 'Theory copied!'); }
+}
+
+function showToast(btn, msg) {
+    var toast = document.getElementById('toast');
+    toast.textContent = msg || 'Copied!';
+    toast.style.display = 'block';
+    if (btn) {
+        var orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 1200);
+    }
+    setTimeout(function() { toast.style.display = 'none'; }, 1200);
+}
+
+function toggleHistory() {
+    var p = document.getElementById('copyHistory');
+    p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+
+function renderHistory() {
+    var html = '';
+    copyHistoryList.forEach(function(item, idx) {
+        var preview = item.text.substring(0, 50).replace(/\n/g, ' ');
+        html += '<div class="ch-item" onclick="reCopy(' + idx + ')"><b>' + item.label + '</b> <span style="color:#484f58">' + item.time + '</span><br>' + preview + '...</div>';
+    });
+    document.getElementById('historyList').innerHTML = html || '<div style="color:#484f58">No copies yet</div>';
+}
+
+function reCopy(idx) { doCopy(copyHistoryList[idx].text, null); showToast(null, 'Re-copied!'); }
+function clearHistory() { copyHistoryList = []; renderHistory(); }
+
+document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); document.getElementById('searchBox').focus(); }
+        return;
+    }
+    if (e.key >= '1' && e.key <= '9' && !e.ctrlKey && !e.altKey && currentWeek) {
+        var blocks = document.getElementById(currentWeek).querySelectorAll('.code-block');
+        var idx = parseInt(e.key) - 1;
+        if (idx < blocks.length) {
+            var section = blocks[idx].closest('.section');
+            if (section) section.classList.add('open');
+            copyCode(blocks[idx].querySelector('.copy-btn'));
+        }
+    }
+    if (e.key === 'h' || e.key === 'H') toggleHistory();
+    if (e.key === 'e' || e.key === 'E') expandAll();
+    if ((e.key === 'c' || e.key === 'C') && !e.ctrlKey) collapseAll();
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); document.getElementById('searchBox').focus(); }
+    if (e.key === 'ArrowLeft' && currentWeek) { var n = parseInt(currentWeek.replace('w','')); if (n > 1) showWeek('w'+(n-1)); }
+    if (e.key === 'ArrowRight' && currentWeek) { var n = parseInt(currentWeek.replace('w','')); if (n < 6) showWeek('w'+(n+1)); }
+});
+
+function searchContent(query) {
+    if (!query || query.length < 2) return;
+    query = query.toLowerCase();
+    var weeks = document.querySelectorAll('.week');
+    var found = false;
+    weeks.forEach(function(w) {
+        if (w.textContent.toLowerCase().indexOf(query) !== -1) {
+            if (!found) { showWeek(w.id); found = true; }
+            w.querySelectorAll('.section').forEach(function(s) {
+                if (s.textContent.toLowerCase().indexOf(query) !== -1) s.classList.add('open');
+            });
+        }
+    });
+}
+
+renderHistory();
+</script>
+
+</body>
+</html>
