@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>WT Lab Exam</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Consolas,monospace;background:#0d1117;color:#c9d1d9;padding:15px}
+h1{color:#58a6ff;text-align:center;font-size:20px;margin-bottom:10px}
+.top{text-align:center;margin-bottom:15px}
+select{background:#161b22;color:#58a6ff;border:1px solid #30363d;padding:10px 20px;font-size:16px;border-radius:6px;cursor:pointer;font-family:Consolas,monospace}
+.week{display:none}
+.week.active{display:block}
+h2{color:#f0883e;padding:8px;background:#161b22;border-left:4px solid #f0883e;margin:15px 0 8px}
+h3{color:#7ee787;margin:10px 0 5px}
+.theory{background:#1c2333;padding:10px;border-radius:6px;margin:8px 0;border-left:3px solid #58a6ff;line-height:1.7}
+.code-block{position:relative;margin:8px 0}
+.code-block pre{background:#161b22;padding:12px;padding-top:35px;border-radius:6px;overflow-x:auto;font-size:13px;border:1px solid #30363d;line-height:1.5;white-space:pre;tab-size:4}
+.copy-btn{position:absolute;top:5px;right:5px;background:#238636;color:#fff;border:none;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px;font-family:Consolas,monospace;z-index:1}
+.copy-btn:hover{background:#2ea043}
+.copy-btn.copied{background:#58a6ff}
+.file-label{position:absolute;top:5px;left:8px;color:#8b949e;font-size:11px;font-family:Consolas,monospace}
+.section{margin-bottom:10px;border:1px solid #30363d;border-radius:6px;overflow:hidden}
+.section-head{background:#161b22;padding:8px 12px;cursor:pointer;color:#7ee787;font-weight:bold;display:flex;justify-content:space-between;align-items:center}
+.section-head:hover{background:#1c2333}
+.section-body{display:none;padding:10px}
+.section.open .section-body{display:block}
+.section-head::after{content:'▶';font-size:12px;transition:transform 0.2s}
+.section.open .section-head::after{content:'▼'}
+.toast{position:fixed;bottom:20px;right:20px;background:#238636;color:#fff;padding:10px 20px;border-radius:6px;display:none;font-size:14px;z-index:999}
+</style>
+</head>
+<body>
+
+<h1>WT LAB EXAM PREP</h1>
+<div class="top">
+<select id="weekSelect" onchange="showWeek(this.value)">
+<option value="">-- Select Week --</option>
+<option value="w1">Week 1: HTML Frames</option>
+<option value="w2">Week 2: CSS Styling</option>
+<option value="w3">Week 3: JavaScript Forms</option>
+<option value="w4">Week 4: Shopping Cart</option>
+<option value="w5">Week 5: XML Book Catalog</option>
+<option value="w6">Week 6: XML User Account</option>
+<option value="w7">Week 7: Tomcat Setup</option>
+<option value="w8">Week 8: Servlet Book Retrieval</option>
+<option value="w9">Week 9: User Authentication</option>
+<option value="w10">Week 10: Hibernate Mapping</option>
+<option value="w11">Week 11: Hibernate CRUD</option>
+<option value="w12">Week 12: AJAX + Servlet</option>
+<option value="w13">Week 13: Checkout Process</option>
+<option value="w14">Week 14: Deployment</option>
+</select>
+</div>
+
+<div id="toast" class="toast">Copied!</div>
+
+<!-- ==================== WEEK 1 ==================== -->
+<div class="week" id="w1">
+<h2>WEEK 1: HTML Frames - Online Book Store</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>Frames</b> divide browser window into multiple sections, each loading a separate HTML file.<br>
+• <b>&lt;frameset&gt;</b> replaces &lt;body&gt; tag. Uses <b>rows/cols</b> attributes to split screen.<br>
+• <b>&lt;frame src=""&gt;</b> loads individual HTML pages into each section.<br>
+• <b>target</b> attribute in &lt;a&gt; tag controls which frame loads the linked page.<br>
+• <b>name</b> attribute on &lt;frame&gt; gives it an identity for targeting.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">index.html (Main Frameset)</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">index.html</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Online Book Store&lt;/title&gt;&lt;/head&gt;
+&lt;frameset rows="*,80"&gt;
+    &lt;frameset cols="200,*"&gt;
+        &lt;frame src="nav.html" name="navFrame"&gt;
+        &lt;frame src="content.html" name="contentFrame"&gt;
+    &lt;/frameset&gt;
+    &lt;frame src="footer.html" name="footerFrame"&gt;
+&lt;/frameset&gt;
+&lt;/html&gt;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">nav.html</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">nav.html</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;body style="background:#f0f0f0"&gt;
+&lt;h3&gt;Books&lt;/h3&gt;
+&lt;a href="book1.html" target="contentFrame"&gt;Java Programming&lt;/a&gt;&lt;br&gt;
+&lt;a href="book2.html" target="contentFrame"&gt;Web Technology&lt;/a&gt;&lt;br&gt;
+&lt;a href="book3.html" target="contentFrame"&gt;DBMS&lt;/a&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">content.html</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">content.html</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;h2&gt;Welcome to Online Book Store&lt;/h2&gt;
+&lt;p&gt;Select a book from the navigation to view details.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">footer.html</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">footer.html</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;body style="background:#333;color:#fff;text-align:center"&gt;
+&lt;p&gt;&amp;copy; 2025 Online Book Store. Contact: info@bookstore.com&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">book1.html</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">book1.html</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;h2&gt;Java Programming&lt;/h2&gt;
+&lt;p&gt;Author: Herbert Schildt&lt;/p&gt;
+&lt;p&gt;Price: Rs.450&lt;/p&gt;
+&lt;p&gt;Available: Yes&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 2 ==================== -->
+<div class="week" id="w2">
+<h2>WEEK 2: CSS Styling</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>CSS</b> = Cascading Style Sheets, used to style HTML elements.<br>
+• 3 ways: <b>Inline</b> (style=""), <b>Internal</b> (&lt;style&gt; in head), <b>External</b> (.css file).<br>
+• <b>Selectors</b>: element, .class, #id, * (universal).<br>
+• <b>Box Model</b>: content → padding → border → margin.<br>
+• <b>Properties</b>: font-family, color, background, margin, padding, border, display, float.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">style.css</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">style.css</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>/* Navigation Frame Styling */
+body.nav {
+    background: #2c3e50;
+    font-family: Arial, sans-serif;
+    padding: 10px;
+}
+body.nav a {
+    display: block;
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 8px;
+    margin: 4px 0;
+    background: #34495e;
+    border-radius: 4px;
+}
+body.nav a:hover {
+    background: #1abc9c;
+}
+
+/* Content Frame Styling */
+body.content {
+    font-family: Georgia, serif;
+    padding: 20px;
+    background: #fafafa;
+}
+body.content h2 {
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 5px;
+}
+body.content p {
+    color: #555;
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+/* Footer Styling */
+body.footer {
+    background: #2c3e50;
+    color: #ecf0f1;
+    text-align: center;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+}</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">Updated nav.html with CSS</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">nav.html</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;head&gt;&lt;link rel="stylesheet" href="style.css"&gt;&lt;/head&gt;
+&lt;body class="nav"&gt;
+&lt;h3 style="color:#fff"&gt;Books&lt;/h3&gt;
+&lt;a href="book1.html" target="contentFrame"&gt;Java Programming&lt;/a&gt;
+&lt;a href="book2.html" target="contentFrame"&gt;Web Technology&lt;/a&gt;
+&lt;a href="book3.html" target="contentFrame"&gt;DBMS&lt;/a&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 3 ==================== -->
+<div class="week" id="w3">
+<h2>WEEK 3: JavaScript - Forms &amp; Dynamic Loading</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>JavaScript</b> is a client-side scripting language for interactivity.<br>
+• <b>DOM</b> (Document Object Model) allows JS to access/modify HTML elements.<br>
+• <b>Form Validation</b>: Check input before sending to server, improves UX.<br>
+• <b>Regular Expressions</b>: Patterns to validate email, password etc.<br>
+• <b>document.getElementById()</b> accesses elements; <b>.innerHTML</b> changes content.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">3a) Registration Form</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">register.html</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Register&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;User Registration&lt;/h2&gt;
+&lt;form onsubmit="return validate()"&gt;
+    Username: &lt;input type="text" id="user"&gt;&lt;br&gt;&lt;br&gt;
+    Password: &lt;input type="password" id="pass"&gt;&lt;br&gt;&lt;br&gt;
+    Confirm Password: &lt;input type="password" id="cpass"&gt;&lt;br&gt;&lt;br&gt;
+    &lt;input type="submit" value="Register"&gt;
+    &lt;p id="msg" style="color:red"&gt;&lt;/p&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+function validate() {
+    var user = document.getElementById("user").value;
+    var pass = document.getElementById("pass").value;
+    var cpass = document.getElementById("cpass").value;
+    var msg = document.getElementById("msg");
+
+    if (user == "" || user.length &lt; 5) {
+        msg.innerHTML = "Username must be at least 5 characters";
+        return false;
+    }
+    if (pass == "" || pass.length &lt; 8) {
+        msg.innerHTML = "Password must be at least 8 characters";
+        return false;
+    }
+    if (pass != cpass) {
+        msg.innerHTML = "Passwords do not match";
+        return false;
+    }
+    alert("Registration Successful!");
+    return true;
+}
+&lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">3b) Forgot Password Form</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">forgot.html</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Forgot Password&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;Forgot Password&lt;/h2&gt;
+&lt;form onsubmit="return validateEmail()"&gt;
+    Email: &lt;input type="text" id="email"&gt;
+    &lt;input type="submit" value="Reset Password"&gt;
+    &lt;p id="msg" style="color:red"&gt;&lt;/p&gt;
+&lt;/form&gt;
+
+&lt;script&gt;
+var registeredEmails = ["user1@gmail.com", "admin@bookstore.com"];
+
+function validateEmail() {
+    var email = document.getElementById("email").value;
+    var msg = document.getElementById("msg");
+    var pattern = /^[a-zA-Z0-9._]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/;
+
+    if (!pattern.test(email)) {
+        msg.innerHTML = "Invalid email format";
+        return false;
+    }
+    if (registeredEmails.indexOf(email) == -1) {
+        msg.innerHTML = "Email not associated with any account";
+        return false;
+    }
+    alert("Password reset link sent!");
+    return true;
+}
+&lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">3c) Dynamic Content Loading</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">nav.html (updated)</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;h3&gt;Books&lt;/h3&gt;
+&lt;a href="#" onclick="loadBook(1)"&gt;Java Programming&lt;/a&gt;&lt;br&gt;
+&lt;a href="#" onclick="loadBook(2)"&gt;Web Technology&lt;/a&gt;&lt;br&gt;
+
+&lt;script&gt;
+var books = {
+    1: {title:"Java Programming", author:"Herbert Schildt", price:"Rs.450"},
+    2: {title:"Web Technology", author:"Uttam Roy", price:"Rs.380"}
+};
+
+function loadBook(id) {
+    var book = books[id];
+    var content = "&lt;h2&gt;" + book.title + "&lt;/h2&gt;" +
+                  "&lt;p&gt;Author: " + book.author + "&lt;/p&gt;" +
+                  "&lt;p&gt;Price: " + book.price + "&lt;/p&gt;";
+    parent.frames["contentFrame"].document.body.innerHTML = content;
+}
+&lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 4 ==================== -->
+<div class="week" id="w4">
+<h2>WEEK 4: Shopping Cart</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>Array</b> stores cart items. push() adds, splice() removes.<br>
+• <b>JSON</b> can store complex objects (title, price, qty).<br>
+• <b>DOM manipulation</b> updates cart display dynamically without page reload.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">Shopping Cart Code</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">cart.html</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;head&gt;&lt;title&gt;Shopping Cart&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+&lt;h2&gt;Online Book Store&lt;/h2&gt;
+&lt;div&gt;
+    &lt;p&gt;Java Programming - Rs.450 &lt;button onclick="addToCart('Java Programming',450)"&gt;Add to Cart&lt;/button&gt;&lt;/p&gt;
+    &lt;p&gt;Web Technology - Rs.380 &lt;button onclick="addToCart('Web Technology',380)"&gt;Add to Cart&lt;/button&gt;&lt;/p&gt;
+    &lt;p&gt;DBMS - Rs.320 &lt;button onclick="addToCart('DBMS',320)"&gt;Add to Cart&lt;/button&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;h3&gt;Cart:&lt;/h3&gt;
+&lt;div id="cart"&gt;&lt;/div&gt;
+&lt;p&gt;&lt;b&gt;Total: Rs.&lt;span id="total"&gt;0&lt;/span&gt;&lt;/b&gt;&lt;/p&gt;
+
+&lt;script&gt;
+var cart = [];
+
+function addToCart(title, price) {
+    cart.push({title: title, price: price});
+    displayCart();
+}
+
+function removeFromCart(index) {
+    cart.splice(index, 1);
+    displayCart();
+}
+
+function displayCart() {
+    var html = "";
+    var total = 0;
+    for (var i = 0; i &lt; cart.length; i++) {
+        html += cart[i].title + " - Rs." + cart[i].price +
+                " &lt;button onclick='removeFromCart(" + i + ")'&gt;Remove&lt;/button&gt;&lt;br&gt;";
+        total += cart[i].price;
+    }
+    document.getElementById("cart").innerHTML = html;
+    document.getElementById("total").innerHTML = total;
+}
+&lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 5 ==================== -->
+<div class="week" id="w5">
+<h2>WEEK 5: XML - Book Catalog</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>XML</b> = eXtensible Markup Language, stores/transports data.<br>
+• XML is <b>self-descriptive</b> with custom tags. Must be <b>well-formed</b> (proper nesting, closing).<br>
+• <b>Prolog</b>: &lt;?xml version="1.0"?&gt; declares XML version.<br>
+• <b>Root element</b> is mandatory and wraps all other elements.<br>
+• <b>Attributes</b> provide additional info: &lt;book id="1"&gt;.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">bookcatalog.xml</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">bookcatalog.xml</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;bookcatalog&gt;
+    &lt;book id="1"&gt;
+        &lt;title&gt;Java Programming&lt;/title&gt;
+        &lt;author&gt;Herbert Schildt&lt;/author&gt;
+        &lt;genre&gt;Programming&lt;/genre&gt;
+        &lt;price&gt;450&lt;/price&gt;
+        &lt;availability&gt;In Stock&lt;/availability&gt;
+    &lt;/book&gt;
+    &lt;book id="2"&gt;
+        &lt;title&gt;Web Technology&lt;/title&gt;
+        &lt;author&gt;Uttam Roy&lt;/author&gt;
+        &lt;genre&gt;Web Development&lt;/genre&gt;
+        &lt;price&gt;380&lt;/price&gt;
+        &lt;availability&gt;In Stock&lt;/availability&gt;
+    &lt;/book&gt;
+    &lt;book id="3"&gt;
+        &lt;title&gt;DBMS&lt;/title&gt;
+        &lt;author&gt;Navathe&lt;/author&gt;
+        &lt;genre&gt;Database&lt;/genre&gt;
+        &lt;price&gt;320&lt;/price&gt;
+        &lt;availability&gt;Out of Stock&lt;/availability&gt;
+    &lt;/book&gt;
+&lt;/bookcatalog&gt;</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 6 ==================== -->
+<div class="week" id="w6">
+<h2>WEEK 6: XML - User Account</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• User data stored in structured XML for portability.<br>
+• Passwords should be <b>encrypted/hashed</b> (never plain text).<br>
+• <b>CDATA</b> sections can hold special characters: &lt;![CDATA[...]]&gt;.<br>
+• XML can represent <b>nested structures</b> like purchase history.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">useraccount.xml</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">useraccount.xml</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;users&gt;
+    &lt;user id="1"&gt;
+        &lt;username&gt;john_doe&lt;/username&gt;
+        &lt;password&gt;a1b2c3d4e5f6&lt;/password&gt;
+        &lt;email&gt;john@gmail.com&lt;/email&gt;
+        &lt;purchasehistory&gt;
+            &lt;purchase&gt;
+                &lt;bookid&gt;1&lt;/bookid&gt;
+                &lt;date&gt;2025-01-15&lt;/date&gt;
+                &lt;amount&gt;450&lt;/amount&gt;
+            &lt;/purchase&gt;
+            &lt;purchase&gt;
+                &lt;bookid&gt;3&lt;/bookid&gt;
+                &lt;date&gt;2025-02-10&lt;/date&gt;
+                &lt;amount&gt;320&lt;/amount&gt;
+            &lt;/purchase&gt;
+        &lt;/purchasehistory&gt;
+    &lt;/user&gt;
+&lt;/users&gt;</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 7 ==================== -->
+<div class="week" id="w7">
+<h2>WEEK 7: Apache Tomcat Setup in Eclipse</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory (Steps)</div>
+<div class="section-body">
+<div class="theory">
+1. Download Apache Tomcat from <b>tomcat.apache.org</b> (version 9.x).<br>
+2. Extract to a folder (e.g., C:\apache-tomcat-9).<br>
+3. In Eclipse: <b>Window → Preferences → Server → Runtime Environments → Add</b>.<br>
+4. Select <b>Apache Tomcat v9.0</b>, browse to Tomcat folder, click Finish.<br>
+5. <b>File → New → Dynamic Web Project</b>, select Tomcat as target runtime.<br>
+6. Right-click project → <b>Run As → Run on Server</b> → select Tomcat → Finish.<br>
+7. Tomcat runs on <b>port 8080</b> by default. Test: http://localhost:8080
+</div>
+</div>
+</div>
+</div>
+
+<!-- ==================== WEEK 8 ==================== -->
+<div class="week" id="w8">
+<h2>WEEK 8: Servlet - Book Retrieval</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>Servlet</b> = Java class that handles HTTP requests on server side.<br>
+• Extends <b>HttpServlet</b>, overrides <b>doGet()</b> or <b>doPost()</b>.<br>
+• <b>HttpServletRequest</b> = request data, <b>HttpServletResponse</b> = response data.<br>
+• <b>JDBC</b> connects servlet to database.<br>
+• Configured in <b>web.xml</b> or using <b>@WebServlet</b> annotation.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">BookServlet.java</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">BookServlet.java</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.annotation.*;
+import java.sql.*;
+
+@WebServlet("/getBooks")
+public class BookServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/bookstore", "root", "password");
+
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM books");
+
+            out.println("&lt;h2&gt;Book List&lt;/h2&gt;&lt;table border='1'&gt;");
+            out.println("&lt;tr&gt;&lt;th&gt;Title&lt;/th&gt;&lt;th&gt;Author&lt;/th&gt;&lt;th&gt;Price&lt;/th&gt;&lt;/tr&gt;");
+
+            while (rs.next()) {
+                out.println("&lt;tr&gt;&lt;td&gt;" + rs.getString("title") +
+                    "&lt;/td&gt;&lt;td&gt;" + rs.getString("author") +
+                    "&lt;/td&gt;&lt;td&gt;" + rs.getInt("price") + "&lt;/td&gt;&lt;/tr&gt;");
+            }
+            out.println("&lt;/table&gt;");
+            con.close();
+        } catch (Exception e) {
+            out.println("Error: " + e.getMessage());
+        }
+    }
+}</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">MySQL Table Setup</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">SQL</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>CREATE DATABASE bookstore;
+USE bookstore;
+CREATE TABLE books (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(100),
+    author VARCHAR(100),
+    price INT,
+    genre VARCHAR(50)
+);
+INSERT INTO books VALUES(1,'Java Programming','Herbert Schildt',450,'Programming');
+INSERT INTO books VALUES(2,'Web Technology','Uttam Roy',380,'Web');</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 9 ==================== -->
+<div class="week" id="w9">
+<h2>WEEK 9: User Authentication (Servlet + JSP)</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>JSP</b> = Java Server Pages, HTML with embedded Java using &lt;% %&gt; tags.<br>
+• <b>Session</b> tracks logged-in users: request.getSession().<br>
+• <b>RequestDispatcher</b> forwards request to another page.<br>
+• <b>sendRedirect()</b> redirects browser to different URL.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">login.html</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">login.html</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;h2&gt;Login&lt;/h2&gt;
+&lt;form action="LoginServlet" method="post"&gt;
+    Username: &lt;input type="text" name="username"&gt;&lt;br&gt;&lt;br&gt;
+    Password: &lt;input type="password" name="password"&gt;&lt;br&gt;&lt;br&gt;
+    &lt;input type="submit" value="Login"&gt;
+&lt;/form&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">LoginServlet.java</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">LoginServlet.java</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.annotation.*;
+import java.sql.*;
+
+@WebServlet("/LoginServlet")
+public class LoginServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/bookstore", "root", "password");
+
+            PreparedStatement ps = con.prepareStatement(
+                "SELECT * FROM users WHERE username=? AND password=?");
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", username);
+                response.sendRedirect("welcome.jsp");
+            } else {
+                response.sendRedirect("login.html?error=1");
+            }
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">welcome.jsp</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">welcome.jsp</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;%
+    if (session.getAttribute("user") == null) {
+        response.sendRedirect("login.html");
+        return;
+    }
+%&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;h2&gt;Welcome, &lt;%= session.getAttribute("user") %&gt;!&lt;/h2&gt;
+&lt;a href="LogoutServlet"&gt;Logout&lt;/a&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">LogoutServlet.java</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">LogoutServlet.java</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>@WebServlet("/LogoutServlet")
+public class LogoutServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getSession().invalidate();
+        response.sendRedirect("login.html");
+    }
+}</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">Users Table SQL</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">SQL</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50),
+    password VARCHAR(50),
+    email VARCHAR(100)
+);
+INSERT INTO users VALUES(1,'admin','admin123','admin@bookstore.com');</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 10 ==================== -->
+<div class="week" id="w10">
+<h2>WEEK 10: Hibernate Entity Mapping</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>Hibernate</b> = ORM (Object Relational Mapping) framework for Java.<br>
+• Maps Java classes to DB tables using <b>annotations</b>.<br>
+• <b>@Entity</b> marks a class as DB table, <b>@Id</b> marks primary key.<br>
+• <b>@Table</b> specifies table name, <b>@Column</b> specifies column name.<br>
+• <b>hibernate.cfg.xml</b> contains DB connection configuration.<br>
+• <b>SessionFactory</b> creates sessions, <b>Session</b> performs DB operations.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">Book.java (Entity)</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">Book.java</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>import javax.persistence.*;
+
+@Entity
+@Table(name = "books")
+public class Book {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "author")
+    private String author;
+
+    @Column(name = "price")
+    private int price;
+
+    @Column(name = "genre")
+    private String genre;
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public String getAuthor() { return author; }
+    public void setAuthor(String author) { this.author = author; }
+    public int getPrice() { return price; }
+    public void setPrice(int price) { this.price = price; }
+    public String getGenre() { return genre; }
+    public void setGenre(String genre) { this.genre = genre; }
+}</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">User.java (Entity)</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">User.java</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>import javax.persistence.*;
+
+@Entity
+@Table(name = "users")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String username;
+    private String password;
+    private String email;
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+}</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">hibernate.cfg.xml</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">hibernate.cfg.xml</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://hibernate.org/dtd/hibernate-configuration-3.0.dtd"&gt;
+&lt;hibernate-configuration&gt;
+    &lt;session-factory&gt;
+        &lt;property name="hibernate.connection.driver_class"&gt;com.mysql.cj.jdbc.Driver&lt;/property&gt;
+        &lt;property name="hibernate.connection.url"&gt;jdbc:mysql://localhost:3306/bookstore&lt;/property&gt;
+        &lt;property name="hibernate.connection.username"&gt;root&lt;/property&gt;
+        &lt;property name="hibernate.connection.password"&gt;password&lt;/property&gt;
+        &lt;property name="hibernate.dialect"&gt;org.hibernate.dialect.MySQLDialect&lt;/property&gt;
+        &lt;property name="hibernate.hbm2ddl.auto"&gt;update&lt;/property&gt;
+        &lt;property name="hibernate.show_sql"&gt;true&lt;/property&gt;
+        &lt;mapping class="Book"/&gt;
+        &lt;mapping class="User"/&gt;
+    &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 11 ==================== -->
+<div class="week" id="w11">
+<h2>WEEK 11: Hibernate CRUD Operations</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>CRUD</b> = Create, Read, Update, Delete.<br>
+• <b>session.save()</b> = Create, <b>session.get()</b> = Read.<br>
+• <b>session.update()</b> = Update, <b>session.delete()</b> = Delete.<br>
+• Always wrap operations in <b>Transaction</b>: beginTransaction() → commit().
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">BookDAO.java</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">BookDAO.java</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>import org.hibernate.*;
+import org.hibernate.cfg.*;
+import java.util.List;
+
+public class BookDAO {
+    static SessionFactory factory = new Configuration()
+        .configure("hibernate.cfg.xml").buildSessionFactory();
+
+    // CREATE
+    public static void addBook(Book book) {
+        Session session = factory.openSession();
+        Transaction tx = session.beginTransaction();
+        session.save(book);
+        tx.commit();
+        session.close();
+    }
+
+    // READ
+    public static Book getBook(int id) {
+        Session session = factory.openSession();
+        Book book = session.get(Book.class, id);
+        session.close();
+        return book;
+    }
+
+    // READ ALL
+    public static List&lt;Book&gt; getAllBooks() {
+        Session session = factory.openSession();
+        List&lt;Book&gt; books = session.createQuery("from Book", Book.class).list();
+        session.close();
+        return books;
+    }
+
+    // UPDATE
+    public static void updateBook(Book book) {
+        Session session = factory.openSession();
+        Transaction tx = session.beginTransaction();
+        session.update(book);
+        tx.commit();
+        session.close();
+    }
+
+    // DELETE
+    public static void deleteBook(int id) {
+        Session session = factory.openSession();
+        Transaction tx = session.beginTransaction();
+        Book book = session.get(Book.class, id);
+        if (book != null) session.delete(book);
+        tx.commit();
+        session.close();
+    }
+
+    // TEST
+    public static void main(String[] args) {
+        Book b = new Book();
+        b.setTitle("Python Basics");
+        b.setAuthor("John");
+        b.setPrice(300);
+        b.setGenre("Programming");
+        addBook(b);
+        System.out.println("Book added: " + b.getTitle());
+
+        List&lt;Book&gt; all = getAllBooks();
+        for (Book bk : all) {
+            System.out.println(bk.getTitle() + " - " + bk.getPrice());
+        }
+    }
+}</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 12 ==================== -->
+<div class="week" id="w12">
+<h2>WEEK 12: JavaScript + Servlet Integration (AJAX Cart)</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• <b>AJAX</b> = Asynchronous JavaScript and XML, updates page without reload.<br>
+• <b>XMLHttpRequest</b> object sends/receives data from server asynchronously.<br>
+• <b>Fetch API</b> is modern alternative to XMLHttpRequest.<br>
+• Servlet returns data (JSON/text), JS updates DOM dynamically.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">cart.html (AJAX)</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">cart.html</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;h2&gt;Books&lt;/h2&gt;
+&lt;button onclick="addToCart(1)"&gt;Add Java Programming&lt;/button&gt;
+&lt;button onclick="addToCart(2)"&gt;Add Web Technology&lt;/button&gt;
+
+&lt;h3&gt;Cart:&lt;/h3&gt;
+&lt;div id="cartDisplay"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+function addToCart(bookId) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "CartServlet?action=add&amp;bookId=" + bookId, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 &amp;&amp; xhr.status == 200) {
+            document.getElementById("cartDisplay").innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send();
+}
+
+function removeFromCart(bookId) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "CartServlet?action=remove&amp;bookId=" + bookId, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 &amp;&amp; xhr.status == 200) {
+            document.getElementById("cartDisplay").innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send();
+}
+&lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">CartServlet.java</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">CartServlet.java</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.annotation.*;
+import java.util.*;
+
+@WebServlet("/CartServlet")
+public class CartServlet extends HttpServlet {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        List&lt;String&gt; cart = (List&lt;String&gt;) session.getAttribute("cart");
+        if (cart == null) cart = new ArrayList&lt;&gt;();
+
+        String action = request.getParameter("action");
+        String bookId = request.getParameter("bookId");
+
+        Map&lt;String,String&gt; books = new HashMap&lt;&gt;();
+        books.put("1", "Java Programming - Rs.450");
+        books.put("2", "Web Technology - Rs.380");
+
+        if ("add".equals(action)) {
+            cart.add(books.get(bookId));
+        } else if ("remove".equals(action)) {
+            cart.remove(books.get(bookId));
+        }
+
+        session.setAttribute("cart", cart);
+
+        PrintWriter out = response.getWriter();
+        for (int i = 0; i &lt; cart.size(); i++) {
+            out.println(cart.get(i) + "&lt;br&gt;");
+        }
+        out.println("&lt;b&gt;Total items: " + cart.size() + "&lt;/b&gt;");
+    }
+}</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 13 ==================== -->
+<div class="week" id="w13">
+<h2>WEEK 13: Checkout Process (Servlet + JSP)</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory</div>
+<div class="section-body">
+<div class="theory">
+• Checkout involves: <b>Cart Review → Shipping Info → Confirmation</b>.<br>
+• <b>Session</b> maintains cart data across pages.<br>
+• <b>JSP Expression Language (EL)</b>: ${variable} accesses session/request attributes.
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">checkout.jsp</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">checkout.jsp</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>&lt;%@ page import="java.util.*" %&gt;
+&lt;%
+    List&lt;String&gt; cart = (List&lt;String&gt;) session.getAttribute("cart");
+    if (cart == null || cart.isEmpty()) {
+        response.sendRedirect("cart.html");
+        return;
+    }
+%&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;h2&gt;Checkout&lt;/h2&gt;
+&lt;h3&gt;Your Cart:&lt;/h3&gt;
+&lt;% for (String item : cart) { %&gt;
+    &lt;p&gt;&lt;%= item %&gt;&lt;/p&gt;
+&lt;% } %&gt;
+
+&lt;h3&gt;Shipping Information:&lt;/h3&gt;
+&lt;form action="CheckoutServlet" method="post"&gt;
+    Full Name: &lt;input type="text" name="name" required&gt;&lt;br&gt;&lt;br&gt;
+    Address: &lt;input type="text" name="address" required&gt;&lt;br&gt;&lt;br&gt;
+    City: &lt;input type="text" name="city" required&gt;&lt;br&gt;&lt;br&gt;
+    PIN Code: &lt;input type="text" name="pin" required&gt;&lt;br&gt;&lt;br&gt;
+    &lt;input type="submit" value="Place Order"&gt;
+&lt;/form&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+</div></div>
+</div>
+
+<div class="section">
+<div class="section-head" onclick="toggle(this)">CheckoutServlet.java</div>
+<div class="section-body"><div class="code-block">
+<span class="file-label">CheckoutServlet.java</span>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre>import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.annotation.*;
+
+@WebServlet("/CheckoutServlet")
+public class CheckoutServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String name = request.getParameter("name");
+        String address = request.getParameter("address");
+        String city = request.getParameter("city");
+        String pin = request.getParameter("pin");
+
+        HttpSession session = request.getSession();
+        session.removeAttribute("cart");
+
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        out.println("&lt;h2&gt;Order Confirmed!&lt;/h2&gt;");
+        out.println("&lt;p&gt;Thank you, " + name + "!&lt;/p&gt;");
+        out.println("&lt;p&gt;Shipping to: " + address + ", " + city + " - " + pin + "&lt;/p&gt;");
+        out.println("&lt;a href='cart.html'&gt;Continue Shopping&lt;/a&gt;");
+    }
+}</pre>
+</div></div>
+</div>
+</div>
+
+<!-- ==================== WEEK 14 ==================== -->
+<div class="week" id="w14">
+<h2>WEEK 14: Deployment to Tomcat</h2>
+
+<div class="section open">
+<div class="section-head" onclick="toggle(this)">Theory (Steps)</div>
+<div class="section-body">
+<div class="theory">
+<b>Local Deployment:</b><br>
+1. In Eclipse: Right-click project → <b>Export → WAR file</b>.<br>
+2. Copy the .war file to <b>tomcat/webapps/</b> folder.<br>
+3. Start Tomcat: run <b>startup.bat</b> (Windows) or <b>startup.sh</b> (Linux).<br>
+4. Access at: <b>http://localhost:8080/projectname</b>.<br><br>
+
+<b>Cloud Deployment (Optional):</b><br>
+• Cloud platforms: AWS, Heroku, Google Cloud, Azure.<br>
+• Steps: Create account → Create app → Deploy WAR → Access via public URL.<br><br>
+
+<b>Project Structure:</b><br>
+<pre style="border:none;margin:0;padding:5px 0;background:transparent;color:#c9d1d9;font-size:13px">BookStore/
+├── src/
+│   └── (Java files - Servlets, Entities, DAOs)
+├── WebContent/
+│   ├── WEB-INF/
+│   │   ├── web.xml
+│   │   └── lib/ (JAR files)
+│   ├── index.html
+│   ├── login.html
+│   ├── cart.html
+│   └── checkout.jsp
+├── hibernate.cfg.xml
+└── style.css</pre>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+function showWeek(id) {
+    var weeks = document.querySelectorAll('.week');
+    for (var i = 0; i < weeks.length; i++) {
+        weeks[i].classList.remove('active');
+    }
+    if (id) {
+        document.getElementById(id).classList.add('active');
+    }
+}
+
+function toggle(el) {
+    el.parentElement.classList.toggle('open');
+}
+
+function copyCode(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var text = pre.textContent;
+    // decode HTML entities for proper copy
+    var ta = document.createElement('textarea');
+    ta.innerHTML = text;
+    var decoded = ta.value;
+
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(decoded).then(function() {
+            showToast(btn);
+        });
+    } else {
+        // fallback
+        var temp = document.createElement('textarea');
+        temp.value = decoded;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        showToast(btn);
+    }
+}
+
+function showToast(btn) {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    var toast = document.getElementById('toast');
+    toast.style.display = 'block';
+    setTimeout(function() {
+        toast.style.display = 'none';
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+    }, 1500);
+}
+</script>
+
+</body>
+</html>
