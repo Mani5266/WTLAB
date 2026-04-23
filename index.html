@@ -23,11 +23,22 @@ h2{color:#f0883e;padding:8px;background:#161b22;border-left:4px solid #f0883e;ma
 .copy-btn:hover{background:#2ea043;transform:scale(1.05)}
 .copy-btn.copied{background:#58a6ff}
 .file-label{position:absolute;top:8px;left:10px;color:#f0883e;font-size:12px;font-family:Consolas,monospace;font-weight:bold}
+.code-block pre{cursor:pointer;transition:border-color 0.2s,box-shadow 0.2s}
+.code-block pre:hover{border-color:#238636;box-shadow:0 0 0 1px #238636}
+.code-block pre:hover::after{content:'Click anywhere to copy';position:absolute;bottom:6px;right:8px;color:#238636;font-size:11px;opacity:0.8}
+.code-block{position:relative}
 .section{margin-bottom:8px;border:1px solid #30363d;border-radius:6px;overflow:hidden}
 .section-head{background:#161b22;padding:10px 14px;cursor:pointer;color:#7ee787;font-weight:bold;display:flex;justify-content:space-between;align-items:center;user-select:none}
 .section-head:hover{background:#1c2333}
 .section-body{display:none;padding:10px}
 .section.open .section-body{display:block}
+.copy-history{position:fixed;top:10px;right:10px;width:260px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:10px;display:none;z-index:998;max-height:300px;overflow-y:auto;font-size:11px}
+.copy-history h4{color:#58a6ff;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.copy-history .ch-item{padding:5px 8px;margin:3px 0;background:#0d1117;border-radius:4px;cursor:pointer;color:#8b949e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid transparent}
+.copy-history .ch-item:hover{border-color:#238636;color:#c9d1d9}
+.history-btn{background:#21262d;color:#c9d1d9;border:1px solid #30363d;padding:6px 14px;margin:3px;border-radius:4px;cursor:pointer;font-family:Consolas,monospace;font-size:12px}
+.history-btn:hover{background:#30363d}
+.shortcut-hint{position:fixed;bottom:10px;left:10px;color:#484f58;font-size:11px;z-index:50}
 .section-head::after{content:'▶';font-size:12px}
 .section.open .section-head::after{content:'▼'}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#238636;color:#fff;padding:12px 24px;border-radius:8px;display:none;font-size:14px;z-index:999;box-shadow:0 4px 12px rgba(0,0,0,0.4)}
@@ -87,9 +98,19 @@ h2{color:#f0883e;padding:8px;background:#161b22;border-left:4px solid #f0883e;ma
 <button onclick="collapseAll()">Collapse All</button>
 <button onclick="copyAllCode()">Copy ALL Code</button>
 <button onclick="copyTheory()">Copy Theory</button>
+<button class="history-btn" onclick="toggleHistory()">History</button>
 </div>
 
 <div id="toast" class="toast">Copied!</div>
+
+<div class="copy-history" id="copyHistory">
+<h4>Copy History <span style="cursor:pointer;color:#f85149" onclick="clearHistory()">Clear</span></h4>
+<div id="historyList"></div>
+</div>
+
+<div class="shortcut-hint" id="shortcutHint">
+Keys: 1-9 = copy code blocks | H = history | E = expand all | C = collapse all | Ctrl+K = search
+</div>
 
 <!-- ==================== WEEK 1 ==================== -->
 <div class="week" id="w1">
@@ -1219,6 +1240,7 @@ public class CheckoutServlet extends HttpServlet {
 <!-- ==================== JAVASCRIPT ==================== -->
 <script>
 var currentWeek = '';
+var copyHistoryList = [];
 
 function showWeek(id) {
     var weeks = document.querySelectorAll('.week');
@@ -1230,15 +1252,7 @@ function showWeek(id) {
     }
     document.getElementById('toolbar').style.display = id ? 'block' : 'none';
     document.getElementById('quickNav').style.display = 'flex';
-    // highlight active nav
     var navs = document.querySelectorAll('.quick-nav a');
-    for (var i = 0; i < navs.length; i++) {
-        navs[i].classList.remove('active-nav');
-        if (navs[i].textContent === id.toUpperCase().replace('W','W')) {
-            navs[i].classList.add('active-nav');
-        }
-    }
-    // match nav button
     navs.forEach(function(a, idx) {
         var wid = 'w' + (idx + 1);
         if (wid === id) a.classList.add('active-nav');
@@ -1253,15 +1267,13 @@ function toggle(el) {
 function expandAll() {
     var week = document.getElementById(currentWeek);
     if (!week) return;
-    var sections = week.querySelectorAll('.section');
-    sections.forEach(function(s) { s.classList.add('open'); });
+    week.querySelectorAll('.section').forEach(function(s) { s.classList.add('open'); });
 }
 
 function collapseAll() {
     var week = document.getElementById(currentWeek);
     if (!week) return;
-    var sections = week.querySelectorAll('.section');
-    sections.forEach(function(s) { s.classList.remove('open'); });
+    week.querySelectorAll('.section').forEach(function(s) { s.classList.remove('open'); });
 }
 
 function decodeHTML(text) {
@@ -1270,7 +1282,7 @@ function decodeHTML(text) {
     return ta.value;
 }
 
-function doCopy(text) {
+function doCopy(text, label) {
     if (navigator.clipboard) {
         navigator.clipboard.writeText(text);
     } else {
@@ -1283,26 +1295,49 @@ function doCopy(text) {
         document.execCommand('copy');
         document.body.removeChild(temp);
     }
+    // Add to history
+    if (label) {
+        copyHistoryList.unshift({ label: label, text: text, time: new Date().toLocaleTimeString() });
+        if (copyHistoryList.length > 20) copyHistoryList.pop();
+        renderHistory();
+    }
 }
 
 function copyCode(btn) {
     var pre = btn.parentElement.querySelector('pre');
+    var label = btn.parentElement.querySelector('.file-label');
+    var labelText = label ? label.textContent : 'Code';
     var text = decodeHTML(pre.textContent);
-    doCopy(text);
+    doCopy(text, labelText);
     showToast(btn, 'Copied!');
 }
 
+// Click anywhere on pre to copy
+document.addEventListener('click', function(e) {
+    var pre = e.target.closest ? e.target.closest('.code-block pre') : null;
+    if (!pre) return;
+    // Don't trigger if they clicked the copy button
+    if (e.target.classList.contains('copy-btn')) return;
+    var block = pre.closest('.code-block');
+    var btn = block.querySelector('.copy-btn');
+    var label = block.querySelector('.file-label');
+    var labelText = label ? label.textContent : 'Code';
+    var text = decodeHTML(pre.textContent);
+    doCopy(text, labelText);
+    showToast(btn, 'Copied!');
+});
+
 function copyWeekCode(weekId) {
     var week = document.getElementById(weekId);
-    var pres = week.querySelectorAll('pre');
-    var allCode = '';
+    var pres = week.querySelectorAll('.code-block pre');
     var labels = week.querySelectorAll('.file-label');
+    var allCode = '';
     for (var i = 0; i < pres.length; i++) {
         var label = labels[i] ? labels[i].textContent : 'Code';
         allCode += '// ===== ' + label + ' =====\n';
         allCode += decodeHTML(pres[i].textContent) + '\n\n';
     }
-    doCopy(allCode);
+    doCopy(allCode, 'All code - ' + weekId.toUpperCase());
     var btn = week.querySelector('.copy-all-btn');
     showToast(btn, 'All code copied!');
 }
@@ -1317,7 +1352,7 @@ function copyTheory() {
     var week = document.getElementById(currentWeek);
     var theory = week.querySelector('.theory');
     if (theory) {
-        doCopy(theory.textContent);
+        doCopy(theory.textContent, 'Theory - ' + currentWeek.toUpperCase());
         showToast(null, 'Theory copied!');
     }
 }
@@ -1333,15 +1368,95 @@ function showToast(btn, msg) {
         setTimeout(function() {
             btn.textContent = orig;
             btn.classList.remove('copied');
-        }, 1500);
+        }, 1200);
     }
-    setTimeout(function() { toast.style.display = 'none'; }, 1500);
+    setTimeout(function() { toast.style.display = 'none'; }, 1200);
 }
+
+// Copy history
+function toggleHistory() {
+    var panel = document.getElementById('copyHistory');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+function renderHistory() {
+    var html = '';
+    copyHistoryList.forEach(function(item, idx) {
+        var preview = item.text.substring(0, 50).replace(/\n/g, ' ');
+        html += '<div class="ch-item" onclick="reCopy(' + idx + ')" title="Click to re-copy">';
+        html += '<b>' + item.label + '</b> <span style="color:#484f58">' + item.time + '</span><br>';
+        html += preview + '...';
+        html += '</div>';
+    });
+    document.getElementById('historyList').innerHTML = html || '<div style="color:#484f58">No copies yet</div>';
+}
+
+function reCopy(idx) {
+    var item = copyHistoryList[idx];
+    doCopy(item.text, null);
+    showToast(null, 'Re-copied: ' + item.label);
+}
+
+function clearHistory() {
+    copyHistoryList = [];
+    renderHistory();
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    // Don't trigger when typing in search
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            document.getElementById('searchBox').focus();
+        }
+        return;
+    }
+
+    // Number keys 1-9: copy nth code block in current week
+    if (e.key >= '1' && e.key <= '9' && !e.ctrlKey && !e.altKey) {
+        if (!currentWeek) return;
+        var week = document.getElementById(currentWeek);
+        var blocks = week.querySelectorAll('.code-block');
+        var idx = parseInt(e.key) - 1;
+        if (idx < blocks.length) {
+            // Expand the section first
+            var section = blocks[idx].closest('.section');
+            if (section) section.classList.add('open');
+            var btn = blocks[idx].querySelector('.copy-btn');
+            copyCode(btn);
+        }
+    }
+
+    // H = toggle history
+    if (e.key === 'h' || e.key === 'H') toggleHistory();
+
+    // E = expand all
+    if (e.key === 'e' || e.key === 'E') expandAll();
+
+    // C = collapse all (not Ctrl+C)
+    if ((e.key === 'c' || e.key === 'C') && !e.ctrlKey) collapseAll();
+
+    // Ctrl+K = search
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        document.getElementById('searchBox').focus();
+    }
+
+    // Left/Right arrow = prev/next week
+    if (e.key === 'ArrowLeft' && currentWeek) {
+        var num = parseInt(currentWeek.replace('w',''));
+        if (num > 1) showWeek('w' + (num - 1));
+    }
+    if (e.key === 'ArrowRight' && currentWeek) {
+        var num = parseInt(currentWeek.replace('w',''));
+        if (num < 14) showWeek('w' + (num + 1));
+    }
+});
 
 function searchContent(query) {
     if (!query || query.length < 2) return;
     query = query.toLowerCase();
-    // show all weeks that match, expand matching sections
     var weeks = document.querySelectorAll('.week');
     var found = false;
     weeks.forEach(function(w) {
@@ -1350,9 +1465,7 @@ function searchContent(query) {
                 showWeek(w.id);
                 found = true;
             }
-            // expand sections containing match
-            var sections = w.querySelectorAll('.section');
-            sections.forEach(function(s) {
+            w.querySelectorAll('.section').forEach(function(s) {
                 if (s.textContent.toLowerCase().indexOf(query) !== -1) {
                     s.classList.add('open');
                 }
@@ -1361,16 +1474,9 @@ function searchContent(query) {
     });
 }
 
-// Keyboard shortcut: Ctrl+K to focus search
-document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        document.getElementById('searchBox').focus();
-    }
-});
-
-// Show quick nav on load
+// Init
 document.getElementById('quickNav').style.display = 'flex';
+renderHistory();
 </script>
 
 </body>
