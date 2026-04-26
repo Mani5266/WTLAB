@@ -1010,6 +1010,128 @@ function doCopy(text, label) {
     if (label) {
         copyHistoryList.unshift({ label: label, text: text, time: new Date().toLocaleTimeString() });
         if (copyHistoryList.length > 20) copyHistoryList.pop();
+        renderHistory();
+    }
+}
+
+function copyCode(btn) {
+    var pre = btn.parentElement.querySelector('pre');
+    var label = btn.parentElement.querySelector('.file-label');
+    var labelText = label ? label.textContent : 'Code';
+    var text = decodeHTML(pre.textContent);
+    doCopy(text, labelText);
+    showToast(btn, 'Copied!');
+}
+
+document.addEventListener('click', function(e) {
+    var pre = e.target.closest ? e.target.closest('.code-block pre') : null;
+    if (!pre) return;
+    if (e.target.classList.contains('copy-btn')) return;
+    var block = pre.closest('.code-block');
+    var btn = block.querySelector('.copy-btn');
+    var label = block.querySelector('.file-label');
+    var labelText = label ? label.textContent : 'Code';
+    var text = decodeHTML(pre.textContent);
+    doCopy(text, labelText);
+    showToast(btn, 'Copied!');
+});
+
+function copyWeekCode(weekId) {
+    var week = document.getElementById(weekId);
+    var pres = week.querySelectorAll('.code-block pre');
+    var labels = week.querySelectorAll('.file-label');
+    var allCode = '';
+    for (var i = 0; i < pres.length; i++) {
+        var label = labels[i] ? labels[i].textContent : 'Code';
+        allCode += '// ===== ' + label + ' =====\n';
+        allCode += decodeHTML(pres[i].textContent) + '\n\n';
+    }
+    doCopy(allCode, 'All code - ' + weekId.toUpperCase());
+    var btn = week.querySelector('.copy-all-btn');
+    showToast(btn, 'All code copied!');
+}
+
+function copyAllCode() {
+    if (!currentWeek) return;
+    copyWeekCode(currentWeek);
+}
+
+function copyTheory() {
+    if (!currentWeek) return;
+    var week = document.getElementById(currentWeek);
+    var theory = week.querySelector('.theory');
+    if (theory) {
+        doCopy(theory.textContent, 'Theory - ' + currentWeek.toUpperCase());
+        showToast(null, 'Theory copied!');
+    }
+}
+
+function showToast(btn, msg) {
+    var toast = document.getElementById('toast');
+    toast.textContent = msg || 'Copied!';
+    toast.style.display = 'block';
+    if (btn) {
+        var orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(function() {
+            btn.textContent = orig;
+            btn.classList.remove('copied');
+        }, 1200);
+    }
+    setTimeout(function() { toast.style.display = 'none'; }, 1200);
+}
+
+function toggleHistory() {
+    var panel = document.getElementById('copyHistory');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+function renderHistory() {
+    var html = '';
+    copyHistoryList.forEach(function(item, idx) {
+        var preview = item.text.substring(0, 50).replace(/\n/g, ' ');
+        html += '<div class="ch-item" onclick="reCopy(' + idx + ')" title="Click to re-copy">';
+        html += '<b>' + item.label + '</b> <span style="color:#484f58">' + item.time + '</span><br>';
+        html += preview + '...';
+        html += '</div>';
+    });
+    document.getElementById('historyList').innerHTML = html || '<div style="color:#484f58">No copies yet</div>';
+}
+
+function reCopy(idx) {
+    var item = copyHistoryList[idx];
+    doCopy(item.text, null);
+    showToast(null, 'Re-copied: ' + item.label);
+}
+
+function clearHistory() {
+    copyHistoryList = [];
+    renderHistory();
+}
+
+function searchContent(query) {
+    if (!query || query.length < 2) return;
+    query = query.toLowerCase();
+    var weeks = document.querySelectorAll('.week');
+    var found = false;
+    weeks.forEach(function(w) {
+        if (w.textContent.toLowerCase().indexOf(query) !== -1) {
+            if (!found) {
+                showWeek(w.id);
+                found = true;
+            }
+            w.querySelectorAll('.section').forEach(function(s) {
+                if (s.textContent.toLowerCase().indexOf(query) !== -1) {
+                    s.classList.add('open');
+                }
+            });
+        }
+    });
+}
+
+// Init
+document.getElementById('quickNav').style.display = 'flex';
 renderHistory();
 
 // ====== PANIC MODE - Redirect to fake IDE page ======
