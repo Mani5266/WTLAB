@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BookStoreApp - Visual Studio Code</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23007ACC' d='M17.583 2.213l-5.32 4.84-4.026-3.053L3 6.213v11.574l5.237 2.213 4.026-3.053 5.32 4.84L24 19.133V4.867l-6.417-2.654z'/></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Consolas,'Courier New',monospace;overflow:hidden;height:100vh;width:100vw}
+
+/* ========== IDE SWITCHER (hidden bar) ========== */
+.ide-switcher{position:fixed;bottom:-40px;left:50%;transform:translateX(-50%);background:#1e1e1e;border:1px solid #444;border-radius:8px 8px 0 0;padding:6px 16px;display:flex;gap:12px;z-index:100001;transition:bottom 0.3s;font-size:11px}
+.ide-switcher:hover,.ide-switcher.show{bottom:0}
+.ide-switcher .sw-btn{color:#888;cursor:pointer;padding:4px 12px;border-radius:4px;border:1px solid transparent}
+.ide-switcher .sw-btn:hover{color:#fff;background:#333}
+.ide-switcher .sw-btn.active{color:#fff;background:#007acc;border-color:#007acc}
+.ide-switcher .sw-hint{color:#555;font-size:10px;align-self:center}
+
+/* ========== VS CODE SKIN ========== */
+.skin{display:none;width:100vw;height:100vh;flex-direction:column}
+.skin.active{display:flex}
+
+/* VS Code */
+#vscode{background:#1e1e1e;color:#d4d4d4;font-size:13px}
+#vscode .titlebar{background:#323233;padding:0 0 0 8px;display:flex;align-items:center;height:30px}
+#vscode .titlebar .menu{color:#999;padding:0 10px;font-size:14px}
+#vscode .titlebar .title{flex:1;text-align:center;color:#999;font-size:12px}
+#vscode .winbtns{display:flex;height:100%}
+#vscode .winbtn{width:46px;height:100%;display:flex;align-items:center;justify-content:center;color:#999;font-size:12px}
+#vscode .winbtn.close:hover{background:#e81123;color:#fff}
+#vscode .main{display:flex;flex:1;overflow:hidden}
+#vscode .sidebar{display:flex;width:260px;background:#252526;border-right:1px solid #1e1e1e}
+#vscode .sidebar-icons{width:48px;background:#333;display:flex;flex-direction:column;align-items:center;padding-top:8px;gap:16px;font-size:20px}
+#vscode .sb-icon{color:#888;padding:6px}
+#vscode .sb-icon.active{color:#fff;border-left:2px solid #007acc}
+#vscode .explorer{flex:1;padding:8px 0;font-size:12px;overflow-y:auto}
+#vscode .exp-title{color:#bbb;font-size:11px;font-weight:600;padding:4px 12px;letter-spacing:1px}
+#vscode .folder{color:#c9d1d9;padding:3px 12px;cursor:pointer}
+#vscode .folder.sub{padding-left:24px}
+#vscode .file{color:#999;padding:3px 36px;cursor:pointer}
+#vscode .file.active{color:#fff;background:#37373d}
+#vscode .file:hover,#vscode .folder:hover{background:#2a2d2e}
+#vscode .editor{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#vscode .tabs{display:flex;background:#252526;border-bottom:1px solid #1e1e1e;height:35px}
+#vscode .tab{padding:8px 16px;color:#999;font-size:12px;border-right:1px solid #1e1e1e;display:flex;align-items:center;gap:8px}
+#vscode .tab.active{color:#fff;background:#1e1e1e;border-top:1px solid #007acc}
+#vscode .tab span{font-size:14px;color:#666}
+#vscode .breadcrumb{padding:4px 16px;color:#888;font-size:11px;background:#1e1e1e;border-bottom:1px solid #333}
+#vscode .code-area{flex:1;display:flex;overflow-y:auto;padding:8px 0;background:#1e1e1e;line-height:20px}
+#vscode .lines{width:50px;text-align:right;padding-right:12px;color:#555;user-select:none}
+#vscode .code{flex:1;padding-left:8px;white-space:pre}
+#vscode .terminal{height:160px;background:#1e1e1e;border-top:1px solid #333;display:flex;flex-direction:column}
+#vscode .term-tabs{display:flex;background:#252526;padding:0 12px;gap:16px;height:28px;align-items:center;font-size:11px}
+#vscode .term-tab{color:#888;padding:4px 0}
+#vscode .term-tab.active{color:#fff;border-bottom:1px solid #007acc}
+#vscode .term-body{flex:1;padding:8px 16px;font-size:12px;color:#ccc;overflow-y:auto;line-height:1.6}
+#vscode .prompt{color:#569cd6}
+#vscode .statusbar{height:22px;background:#007acc;display:flex;align-items:center;padding:0 12px;font-size:11px;color:#fff;gap:16px}
+#vscode .kw{color:#569cd6}
+#vscode .str{color:#ce9178}
+#vscode .cls{color:#4ec9b0}
+#vscode .fn{color:#dcdcaa}
+#vscode .cmt{color:#6a9955}
+#vscode .ann{color:#d7ba7d}
+#vscode .num{color:#b5cea8}
+
+/* ========== ECLIPSE SKIN ========== */
+#eclipse{background:#f0f0f0;color:#000;font-size:13px;font-family:Consolas,monospace}
+#eclipse .titlebar{background:#e8e8e8;padding:0 0 0 4px;display:flex;align-items:center;height:30px;border-bottom:1px solid #b0b0b0}
+#eclipse .titlebar .title{flex:1;text-align:center;color:#333;font-size:12px}
+#eclipse .winbtns{display:flex;height:100%}
+#eclipse .winbtn{width:46px;height:100%;display:flex;align-items:center;justify-content:center;color:#666;font-size:12px}
+#eclipse .winbtn.close:hover{background:#e81123;color:#fff}
+#eclipse .toolbar{background:#f0f0f0;border-bottom:1px solid #ccc;padding:2px 8px;display:flex;gap:4px;height:28px;align-items:center}
+#eclipse .tb-btn{background:#e8e8e8;border:1px solid #bbb;padding:2px 8px;font-size:11px;color:#333;border-radius:2px;cursor:pointer}
+#eclipse .tb-btn:hover{background:#ddd}
+#eclipse .main{display:flex;flex:1;overflow:hidden}
+#eclipse .sidebar{width:250px;background:#fff;border-right:1px solid #ccc;display:flex;flex-direction:column}
+#eclipse .sidebar-title{background:#e8e8e8;padding:4px 8px;font-size:11px;font-weight:bold;color:#333;border-bottom:1px solid #ccc}
+#eclipse .tree-item{padding:3px 8px;padding-left:20px;font-size:12px;cursor:pointer;color:#333}
+#eclipse .tree-item.pkg{padding-left:32px;color:#555}
+#eclipse .tree-item.file{padding-left:44px}
+#eclipse .tree-item.active{background:#cde8ff}
+#eclipse .tree-item:hover{background:#e8f0fe}
+#eclipse .editor{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#eclipse .tabs{display:flex;background:#f0f0f0;border-bottom:1px solid #ccc;height:28px}
+#eclipse .tab{padding:4px 16px;color:#333;font-size:12px;border:1px solid #ccc;border-bottom:none;background:#e8e8e8;margin-left:-1px;cursor:pointer}
+#eclipse .tab.active{background:#fff;border-bottom:1px solid #fff;margin-bottom:-1px;font-weight:bold}
+#eclipse .code-area{flex:1;display:flex;overflow-y:auto;padding:4px 0;background:#fff;line-height:20px}
+#eclipse .lines{width:45px;text-align:right;padding-right:8px;color:#999;user-select:none;background:#f5f5f5;border-right:1px solid #ddd}
+#eclipse .code{flex:1;padding-left:8px;white-space:pre}
+#eclipse .problems{height:140px;background:#fff;border-top:1px solid #ccc;display:flex;flex-direction:column}
+#eclipse .prob-tabs{display:flex;background:#f0f0f0;padding:0 8px;height:24px;align-items:center;font-size:11px;border-bottom:1px solid #ccc;gap:12px}
+#eclipse .prob-tab{color:#333;padding:2px 0;cursor:pointer}
+#eclipse .prob-tab.active{font-weight:bold;border-bottom:2px solid #4a8bc2}
+#eclipse .prob-body{flex:1;padding:4px 8px;font-size:11px;color:#333;overflow-y:auto}
+#eclipse .statusbar{height:22px;background:#e8e8e8;display:flex;align-items:center;padding:0 12px;font-size:11px;color:#555;gap:16px;border-top:1px solid #ccc}
+#eclipse .kw{color:#7f0055;font-weight:bold}
+#eclipse .str{color:#2a00ff}
+#eclipse .cls{color:#005e00}
+#eclipse .fn{color:#000}
+#eclipse .cmt{color:#3f7f5f}
+#eclipse .ann{color:#808000}
+#eclipse .num{color:#0000c0}
+
+/* ========== MATLAB SKIN ========== */
+#matlab{background:#f5f5f5;color:#000;font-size:13px;font-family:Consolas,monospace}
+#matlab .titlebar{background:#0076d6;padding:0 0 0 8px;display:flex;align-items:center;height:30px}
+#matlab .titlebar .title{flex:1;text-align:center;color:#fff;font-size:12px;font-weight:bold}
+#matlab .winbtns{display:flex;height:100%}
+#matlab .winbtn{width:46px;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px}
+#matlab .winbtn:hover{background:rgba(255,255,255,0.2)}
+#matlab .winbtn.close:hover{background:#e81123}
+#matlab .toolbar{background:#f0f0f0;border-bottom:1px solid #ccc;padding:2px 8px;display:flex;gap:6px;height:50px;align-items:center;flex-wrap:wrap}
+#matlab .tb-section{display:flex;flex-direction:column;align-items:center;padding:2px 10px;border-right:1px solid #ddd;gap:2px}
+#matlab .tb-section span{font-size:10px;color:#666}
+#matlab .tb-btn{background:#e8e8e8;border:1px solid #bbb;padding:3px 10px;font-size:11px;color:#333;cursor:pointer}
+#matlab .tb-btn:hover{background:#ddd}
+#matlab .ribbon-tabs{display:flex;background:#f8f8f8;border-bottom:1px solid #ccc;height:24px;padding:0 8px;gap:16px;align-items:center;font-size:11px}
+#matlab .ribbon-tab{color:#333;padding:4px 0;cursor:pointer}
+#matlab .ribbon-tab.active{font-weight:bold;border-bottom:2px solid #0076d6;color:#0076d6}
+#matlab .main{display:flex;flex:1;overflow:hidden}
+#matlab .sidebar{width:220px;background:#fff;border-right:1px solid #ccc;display:flex;flex-direction:column}
+#matlab .sidebar-title{background:#f0f0f0;padding:4px 8px;font-size:11px;font-weight:bold;color:#333;border-bottom:1px solid #ccc}
+#matlab .ws-row{padding:3px 8px;font-size:11px;color:#333;border-bottom:1px solid #eee;display:flex;justify-content:space-between}
+#matlab .ws-row:hover{background:#e8f0fe}
+#matlab .ws-name{color:#0076d6}
+#matlab .ws-val{color:#555}
+#matlab .editor{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#matlab .tabs{display:flex;background:#f0f0f0;border-bottom:1px solid #ccc;height:26px}
+#matlab .tab{padding:4px 16px;color:#333;font-size:12px;border-right:1px solid #ddd;cursor:pointer;background:#e8e8e8}
+#matlab .tab.active{background:#fff;font-weight:bold}
+#matlab .code-area{flex:1;display:flex;overflow-y:auto;padding:4px 0;background:#fff;line-height:20px}
+#matlab .lines{width:40px;text-align:right;padding-right:8px;color:#aaa;user-select:none}
+#matlab .code{flex:1;padding-left:8px;white-space:pre}
+#matlab .command-window{height:180px;background:#fff;border-top:1px solid #ccc;display:flex;flex-direction:column}
+#matlab .cmd-title{background:#f0f0f0;padding:4px 8px;font-size:11px;font-weight:bold;color:#333;border-bottom:1px solid #ccc}
+#matlab .cmd-body{flex:1;padding:8px;font-size:12px;color:#000;overflow-y:auto;line-height:1.6;font-family:Consolas,monospace}
+#matlab .cmd-prompt{color:#0076d6;font-weight:bold}
+#matlab .statusbar{height:22px;background:#f0f0f0;display:flex;align-items:center;padding:0 12px;font-size:11px;color:#555;border-top:1px solid #ccc}
+#matlab .kw{color:#0000ff}
+#matlab .str{color:#a020f0}
+#matlab .fn{color:#000}
+#matlab .cmt{color:#228b22}
+#matlab .num{color:#000}
+#matlab .op{color:#000}
+
+.cursor-blink{animation:cblink 1s step-end infinite}
+@keyframes cblink{50%{opacity:0}}
+
+/* Back hint */
+.back-hint{position:fixed;top:8px;right:8px;color:#555;font-size:10px;z-index:100000;opacity:0;transition:opacity 0.3s}
+.back-hint:hover{opacity:1}
+</style>
+</head>
+<body>
+
+<!-- ===== VS CODE ===== -->
+<div class="skin active" id="vscode">
+<div class="titlebar">
+  <span class="menu">&#9776;</span>
+  <span class="title">BookStoreApp - Visual Studio Code</span>
+  <span class="winbtns"><span class="winbtn">&#8211;</span><span class="winbtn">&#9723;</span><span class="winbtn close">&#10005;</span></span>
+</div>
+<div class="main">
+  <div class="sidebar">
+    <div class="sidebar-icons">
+      <div class="sb-icon active">&#128462;</div>
+      <div class="sb-icon">&#128269;</div>
+      <div class="sb-icon">&#9679;&#9679;&#9679;</div>
+      <div class="sb-icon">&#9654;</div>
+    </div>
+    <div class="explorer">
+      <div class="exp-title">EXPLORER</div>
+      <div class="folder">&#9660; BOOKSTOREAPP</div>
+      <div class="folder sub">&#9660; src</div>
+      <div class="file active">&#9654; BookServlet.java</div>
+      <div class="file">&#9654; LoginServlet.java</div>
+      <div class="file">&#9654; DBConnection.java</div>
+      <div class="file">&#9654; Book.java</div>
+      <div class="folder sub">&#9660; webapp</div>
+      <div class="file">&#9654; index.html</div>
+      <div class="file">&#9654; style.css</div>
+      <div class="file">&#9654; cart.jsp</div>
+      <div class="file">&#9654; login.jsp</div>
+      <div class="folder sub">&#9654; WEB-INF</div>
+      <div class="file">&#9654; pom.xml</div>
+      <div class="file">&#9654; hibernate.cfg.xml</div>
+    </div>
+  </div>
+  <div class="editor">
+    <div class="tabs">
+      <div class="tab active">BookServlet.java <span>&times;</span></div>
+      <div class="tab">index.html <span>&times;</span></div>
+      <div class="tab">style.css <span>&times;</span></div>
+    </div>
+    <div class="breadcrumb">src &gt; BookServlet.java</div>
+    <div class="code-area">
+      <div class="lines" id="vsc-lines"></div>
+      <div class="code" id="vsc-code"></div>
+    </div>
+    <div class="terminal">
+      <div class="term-tabs">
+        <span class="term-tab active">TERMINAL</span>
+        <span class="term-tab">PROBLEMS</span>
+        <span class="term-tab">OUTPUT</span>
+      </div>
+      <div class="term-body">
+        <span class="prompt">PS C:\BookStoreApp&gt;</span> mvn clean compile<br>
+        <span style="color:#8b949e">[INFO] Scanning for projects...</span><br>
+        <span style="color:#8b949e">[INFO] --- maven-compiler-plugin:3.8.1:compile ---</span><br>
+        <span style="color:#238636">[INFO] BUILD SUCCESS</span><br>
+        <span style="color:#8b949e">[INFO] Total time: 2.847 s</span><br>
+        <span class="prompt">PS C:\BookStoreApp&gt;</span> <span class="cursor-blink">|</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="statusbar">
+  <span>&#9432; main</span>
+  <span>&#10003; 0 &#9888; 0</span>
+  <span style="flex:1"></span>
+  <span>Ln 24, Col 1</span>
+  <span>Spaces: 4</span>
+  <span>UTF-8</span>
+  <span>Java</span>
+</div>
+</div>
+
+<!-- ===== ECLIPSE ===== -->
+<div class="skin" id="eclipse">
+<div class="titlebar">
+  <span class="title">Java - BookServlet.java - BookStoreApp - Eclipse IDE</span>
+  <span class="winbtns"><span class="winbtn">&#8211;</span><span class="winbtn">&#9723;</span><span class="winbtn close">&#10005;</span></span>
+</div>
+<div class="toolbar">
+  <span class="tb-btn">&#128190;</span>
+  <span class="tb-btn">&#9654; Run</span>
+  <span class="tb-btn">&#128030; Debug</span>
+  <span class="tb-btn" style="margin-left:16px">&#128269; Search</span>
+  <span class="tb-btn">&#9881; Project</span>
+</div>
+<div class="main">
+  <div class="sidebar">
+    <div class="sidebar-title">Package Explorer</div>
+    <div class="tree-item">&#9660; BookStoreApp</div>
+    <div class="tree-item" style="padding-left:28px">&#9660; src/main/java</div>
+    <div class="tree-item pkg">&#9660; com.bookstore.servlet</div>
+    <div class="tree-item file active">&#9827; BookServlet.java</div>
+    <div class="tree-item file">&#9827; LoginServlet.java</div>
+    <div class="tree-item file">&#9827; CartServlet.java</div>
+    <div class="tree-item pkg">&#9660; com.bookstore.model</div>
+    <div class="tree-item file">&#9827; Book.java</div>
+    <div class="tree-item file">&#9827; User.java</div>
+    <div class="tree-item pkg">&#9660; com.bookstore.util</div>
+    <div class="tree-item file">&#9827; DBConnection.java</div>
+    <div class="tree-item" style="padding-left:28px">&#9660; src/main/webapp</div>
+    <div class="tree-item file">index.html</div>
+    <div class="tree-item file">style.css</div>
+    <div class="tree-item file">books.jsp</div>
+    <div class="tree-item" style="padding-left:28px">&#9654; JRE System Library</div>
+    <div class="tree-item" style="padding-left:28px">&#9654; Maven Dependencies</div>
+    <div class="tree-item file" style="padding-left:28px">pom.xml</div>
+  </div>
+  <div class="editor">
+    <div class="tabs">
+      <div class="tab active">&#9827; BookServlet.java</div>
+      <div class="tab">&#9827; Book.java</div>
+      <div class="tab">index.html</div>
+    </div>
+    <div class="code-area">
+      <div class="lines" id="ecl-lines"></div>
+      <div class="code" id="ecl-code"></div>
+    </div>
+    <div class="problems">
+      <div class="prob-tabs">
+        <span class="prob-tab active">Problems</span>
+        <span class="prob-tab">Console</span>
+        <span class="prob-tab">Servers</span>
+        <span class="prob-tab">Progress</span>
+      </div>
+      <div class="prob-body">
+        0 errors, 0 warnings, 0 infos<br>
+        <span style="color:#888">Description | Resource | Path | Location | Type</span><br>
+        <span style="color:#4a8bc2">&#9432; Build path specifies execution environment J2SE-1.8</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="statusbar">
+  <span>Writable</span>
+  <span>Smart Insert</span>
+  <span style="flex:1"></span>
+  <span>24 : 1</span>
+  <span>UTF-8</span>
+  <span>&#9432; Tomcat v9.0 [Started]</span>
+</div>
+</div>
+
+<!-- ===== MATLAB ===== -->
+<div class="skin" id="matlab">
+<div class="titlebar">
+  <span class="title">MATLAB R2024a - analysis.m</span>
+  <span class="winbtns"><span class="winbtn">&#8211;</span><span class="winbtn">&#9723;</span><span class="winbtn close">&#10005;</span></span>
+</div>
+<div class="ribbon-tabs">
+  <span class="ribbon-tab active">HOME</span>
+  <span class="ribbon-tab">PLOTS</span>
+  <span class="ribbon-tab">APPS</span>
+  <span class="ribbon-tab">EDITOR</span>
+  <span class="ribbon-tab">PUBLISH</span>
+  <span class="ribbon-tab">VIEW</span>
+</div>
+<div class="toolbar">
+  <div class="tb-section"><span class="tb-btn">&#128194; New</span><span>FILE</span></div>
+  <div class="tb-section"><span class="tb-btn">&#9654; Run</span><span>RUN</span></div>
+  <div class="tb-section"><span class="tb-btn">&#128200; Plot</span><span>PLOTS</span></div>
+  <div class="tb-section"><span class="tb-btn">&#128269; Find</span><span>NAVIGATE</span></div>
+</div>
+<div class="main">
+  <div class="sidebar">
+    <div class="sidebar-title">Workspace</div>
+    <div class="ws-row"><span class="ws-name">x</span><span class="ws-val">1x100 double</span></div>
+    <div class="ws-row"><span class="ws-name">y</span><span class="ws-val">1x100 double</span></div>
+    <div class="ws-row"><span class="ws-name">coeffs</span><span class="ws-val">1x3 double</span></div>
+    <div class="ws-row"><span class="ws-name">data</span><span class="ws-val">50x4 table</span></div>
+    <div class="ws-row"><span class="ws-name">result</span><span class="ws-val">1x1 struct</span></div>
+    <div class="ws-row"><span class="ws-name">mu</span><span class="ws-val">3.4521</span></div>
+    <div class="ws-row"><span class="ws-name">sigma</span><span class="ws-val">1.2087</span></div>
+    <div class="ws-row"><span class="ws-name">n</span><span class="ws-val">100</span></div>
+    <div style="margin-top:16px"></div>
+    <div class="sidebar-title">Current Folder</div>
+    <div class="ws-row"><span>&#128194; +data</span><span></span></div>
+    <div class="ws-row"><span>&#128196; analysis.m</span><span></span></div>
+    <div class="ws-row"><span>&#128196; preprocess.m</span><span></span></div>
+    <div class="ws-row"><span>&#128196; plotResults.m</span><span></span></div>
+    <div class="ws-row"><span>&#128196; README.md</span><span></span></div>
+  </div>
+  <div class="editor">
+    <div class="tabs">
+      <div class="tab active">analysis.m</div>
+      <div class="tab">preprocess.m</div>
+    </div>
+    <div class="code-area">
+      <div class="lines" id="mat-lines"></div>
+      <div class="code" id="mat-code"></div>
+    </div>
+    <div class="command-window">
+      <div class="cmd-title">Command Window</div>
+      <div class="cmd-body">
+        <span class="cmd-prompt">&gt;&gt;</span> run('analysis.m')<br>
+        Loading dataset... done.<br>
+        Fitting polynomial model (degree 2)...<br>
+        R-squared: 0.9847<br>
+        RMSE: 0.1253<br>
+        Coefficients: [2.3401, -1.5672, 0.8834]<br>
+        <span style="color:green">Analysis complete. Plot saved to results/fig1.png</span><br>
+        <span class="cmd-prompt">&gt;&gt;</span> <span class="cursor-blink">|</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="statusbar">
+  <span>Ready</span>
+  <span style="flex:1"></span>
+  <span>Ln 18 Col 1</span>
+</div>
+</div>
+
+<!-- Switcher bar (hover bottom center to reveal) -->
+<div class="ide-switcher" id="switcher">
+  <span class="sw-hint">Switch:</span>
+  <span class="sw-btn active" onclick="switchSkin('vscode')">VS Code</span>
+  <span class="sw-btn" onclick="switchSkin('eclipse')">Eclipse</span>
+  <span class="sw-btn" onclick="switchSkin('matlab')">MATLAB</span>
+</div>
+
+<!-- Invisible back hint -->
+<div class="back-hint" id="backHint">Esc = back</div>
+
+<script>
+// ===== CODE DATA =====
+var vscCode = [
+'<span class="kw">package</span> <span class="str">com.bookstore.servlet</span>;',
+'',
+'<span class="kw">import</span> java.io.*;',
+'<span class="kw">import</span> javax.servlet.*;',
+'<span class="kw">import</span> javax.servlet.http.*;',
+'<span class="kw">import</span> java.sql.*;',
+'<span class="kw">import</span> java.util.ArrayList;',
+'<span class="kw">import</span> java.util.List;',
+'',
+'<span class="cmt">/**',
+' * Servlet to handle book retrieval and display',
+' * @author Student',
+' */</span>',
+'<span class="kw">public class</span> <span class="cls">BookServlet</span> <span class="kw">extends</span> <span class="cls">HttpServlet</span> {',
+'',
+'    <span class="kw">private static final</span> String DB_URL = <span class="str">"jdbc:mysql://localhost:3306/bookstore"</span>;',
+'    <span class="kw">private static final</span> String DB_USER = <span class="str">"root"</span>;',
+'    <span class="kw">private static final</span> String DB_PASS = <span class="str">"password"</span>;',
+'',
+'    <span class="ann">@Override</span>',
+'    <span class="kw">protected void</span> <span class="fn">doGet</span>(HttpServletRequest request, HttpServletResponse response)',
+'            <span class="kw">throws</span> ServletException, IOException {',
+'',
+'        response.setContentType(<span class="str">"text/html;charset=UTF-8"</span>);',
+'        PrintWriter out = response.getWriter();',
+'',
+'        List&lt;Book&gt; books = <span class="kw">new</span> ArrayList&lt;&gt;();',
+'',
+'        <span class="kw">try</span> {',
+'            Class.forName(<span class="str">"com.mysql.cj.jdbc.Driver"</span>);',
+'            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);',
+'            Statement stmt = conn.createStatement();',
+'            ResultSet rs = stmt.executeQuery(<span class="str">"SELECT * FROM books ORDER BY title"</span>);',
+'',
+'            <span class="kw">while</span> (rs.next()) {',
+'                Book book = <span class="kw">new</span> Book();',
+'                book.setId(rs.getInt(<span class="str">"id"</span>));',
+'                book.setTitle(rs.getString(<span class="str">"title"</span>));',
+'                book.setAuthor(rs.getString(<span class="str">"author"</span>));',
+'                book.setPrice(rs.getDouble(<span class="str">"price"</span>));',
+'                books.add(book);',
+'            }',
+'',
+'            rs.close();',
+'            stmt.close();',
+'            conn.close();',
+'',
+'        } <span class="kw">catch</span> (Exception e) {',
+'            e.printStackTrace();',
+'            request.setAttribute(<span class="str">"error"</span>, e.getMessage());',
+'        }',
+'',
+'        request.setAttribute(<span class="str">"bookList"</span>, books);',
+'        RequestDispatcher rd = request.getRequestDispatcher(<span class="str">"/books.jsp"</span>);',
+'        rd.forward(request, response);',
+'    }',
+'}'
+];
+
+var eclCode = [
+'<span class="kw">package</span> com.bookstore.servlet;',
+'',
+'<span class="kw">import</span> java.io.IOException;',
+'<span class="kw">import</span> java.io.PrintWriter;',
+'<span class="kw">import</span> javax.servlet.ServletException;',
+'<span class="kw">import</span> javax.servlet.annotation.WebServlet;',
+'<span class="kw">import</span> javax.servlet.http.*;',
+'<span class="kw">import</span> java.sql.*;',
+'',
+'<span class="ann">@WebServlet</span>(<span class="str">"/BookServlet"</span>)',
+'<span class="kw">public class</span> <span class="cls">BookServlet</span> <span class="kw">extends</span> <span class="cls">HttpServlet</span> {',
+'    <span class="kw">private static final long</span> serialVersionUID = <span class="num">1</span>L;',
+'',
+'    <span class="cmt">// Database configuration</span>',
+'    <span class="kw">private static final</span> String JDBC_URL = <span class="str">"jdbc:mysql://localhost:3306/bookdb"</span>;',
+'    <span class="kw">private static final</span> String JDBC_USER = <span class="str">"root"</span>;',
+'    <span class="kw">private static final</span> String JDBC_PASS = <span class="str">"admin123"</span>;',
+'',
+'    <span class="kw">protected void</span> <span class="fn">doGet</span>(HttpServletRequest request,',
+'            HttpServletResponse response) <span class="kw">throws</span> ServletException, IOException {',
+'',
+'        response.setContentType(<span class="str">"text/html"</span>);',
+'        PrintWriter out = response.getWriter();',
+'',
+'        <span class="kw">try</span> {',
+'            Class.forName(<span class="str">"com.mysql.cj.jdbc.Driver"</span>);',
+'            Connection con = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASS);',
+'            PreparedStatement ps = con.prepareStatement(<span class="str">"SELECT * FROM books"</span>);',
+'            ResultSet rs = ps.executeQuery();',
+'',
+'            out.println(<span class="str">"&lt;html&gt;&lt;body&gt;"</span>);',
+'            out.println(<span class="str">"&lt;h2&gt;Book Catalog&lt;/h2&gt;"</span>);',
+'            out.println(<span class="str">"&lt;table border=1&gt;"</span>);',
+'',
+'            <span class="kw">while</span> (rs.next()) {',
+'                out.println(<span class="str">"&lt;tr&gt;&lt;td&gt;"</span> + rs.getString(<span class="str">"title"</span>) +',
+'                    <span class="str">"&lt;/td&gt;&lt;td&gt;"</span> + rs.getString(<span class="str">"author"</span>) +',
+'                    <span class="str">"&lt;/td&gt;&lt;td&gt;Rs."</span> + rs.getDouble(<span class="str">"price"</span>) +',
+'                    <span class="str">"&lt;/td&gt;&lt;/tr&gt;"</span>);',
+'            }',
+'',
+'            out.println(<span class="str">"&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;"</span>);',
+'            con.close();',
+'',
+'        } <span class="kw">catch</span> (Exception e) {',
+'            out.println(<span class="str">"Error: "</span> + e.getMessage());',
+'        }',
+'    }',
+'}'
+];
+
+var matCode = [
+'<span class="cmt">%% Data Analysis Script</span>',
+'<span class="cmt">% Load and analyze experimental dataset</span>',
+'<span class="cmt">% Author: Student | Date: 2024</span>',
+'',
+'<span class="kw">clc</span>; <span class="kw">clear</span>; <span class="kw">close all</span>;',
+'',
+'<span class="cmt">% Load dataset</span>',
+'fprintf(<span class="str">\'Loading dataset... \'</span>);',
+'data = readtable(<span class="str">\'data/experiment_results.csv\'</span>);',
+'fprintf(<span class="str">\'done.\\n\'</span>);',
+'',
+'<span class="cmt">% Extract variables</span>',
+'x = data.Temperature;',
+'y = data.Pressure;',
+'n = <span class="fn">length</span>(x);',
+'',
+'<span class="cmt">% Statistical summary</span>',
+'mu = <span class="fn">mean</span>(y);',
+'sigma = <span class="fn">std</span>(y);',
+'fprintf(<span class="str">\'Mean: %.4f, Std: %.4f\\n\'</span>, mu, sigma);',
+'',
+'<span class="cmt">% Polynomial curve fitting</span>',
+'degree = <span class="num">2</span>;',
+'fprintf(<span class="str">\'Fitting polynomial model (degree %d)...\\n\'</span>, degree);',
+'coeffs = <span class="fn">polyfit</span>(x, y, degree);',
+'y_pred = <span class="fn">polyval</span>(coeffs, x);',
+'',
+'<span class="cmt">% Goodness of fit</span>',
+'SS_res = <span class="fn">sum</span>((y - y_pred).^<span class="num">2</span>);',
+'SS_tot = <span class="fn">sum</span>((y - mu).^<span class="num">2</span>);',
+'R2 = <span class="num">1</span> - SS_res/SS_tot;',
+'RMSE = <span class="fn">sqrt</span>(<span class="fn">mean</span>((y - y_pred).^<span class="num">2</span>));',
+'',
+'fprintf(<span class="str">\'R-squared: %.4f\\n\'</span>, R2);',
+'fprintf(<span class="str">\'RMSE: %.4f\\n\'</span>, RMSE);',
+'',
+'<span class="cmt">% Plot results</span>',
+'<span class="fn">figure</span>(<span class="str">\'Position\'</span>, [<span class="num">100 100 800 500</span>]);',
+'<span class="fn">scatter</span>(x, y, <span class="num">30</span>, <span class="str">\'b\'</span>, <span class="str">\'filled\'</span>); <span class="kw">hold on</span>;',
+'x_fit = <span class="fn">linspace</span>(<span class="fn">min</span>(x), <span class="fn">max</span>(x), <span class="num">200</span>);',
+'<span class="fn">plot</span>(x_fit, <span class="fn">polyval</span>(coeffs, x_fit), <span class="str">\'r-\'</span>, <span class="str">\'LineWidth\'</span>, <span class="num">2</span>);',
+'<span class="fn">xlabel</span>(<span class="str">\'Temperature (°C)\'</span>);',
+'<span class="fn">ylabel</span>(<span class="str">\'Pressure (kPa)\'</span>);',
+'<span class="fn">title</span>(<span class="fn">sprintf</span>(<span class="str">\'Polynomial Fit (R² = %.4f)\'</span>, R2));',
+'<span class="fn">legend</span>(<span class="str">\'Data\'</span>, <span class="str">\'Fit\'</span>, <span class="str">\'Location\'</span>, <span class="str">\'northwest\'</span>);',
+'<span class="fn">grid on</span>;',
+'',
+'<span class="cmt">% Save figure</span>',
+'<span class="fn">saveas</span>(<span class="fn">gcf</span>, <span class="str">\'results/fig1.png\'</span>);',
+'fprintf(<span class="str">\'Analysis complete. Plot saved to results/fig1.png\\n\'</span>);'
+];
+
+// ===== FILL CODE =====
+function fillCode(lines_id, code_id, codeArr) {
+    var lh = '', ch = '';
+    for (var i = 0; i < codeArr.length; i++) {
+        lh += (i+1) + '<br>';
+        ch += codeArr[i] + '\n';
+    }
+    document.getElementById(lines_id).innerHTML = lh;
+    document.getElementById(code_id).innerHTML = ch;
+}
+fillCode('vsc-lines', 'vsc-code', vscCode);
+fillCode('ecl-lines', 'ecl-code', eclCode);
+fillCode('mat-lines', 'mat-code', matCode);
+
+// ===== SKIN SWITCHING =====
+var currentSkin = 'vscode';
+var skinTitles = {
+    vscode: 'BookStoreApp - Visual Studio Code',
+    eclipse: 'Java - BookServlet.java - Eclipse IDE',
+    matlab: 'MATLAB R2024a - analysis.m'
+};
+var skinFavicons = {
+    vscode: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23007ACC' d='M17.583 2.213l-5.32 4.84-4.026-3.053L3 6.213v11.574l5.237 2.213 4.026-3.053 5.32 4.84L24 19.133V4.867l-6.417-2.654z'/></svg>",
+    eclipse: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='%232C2255'/><path d='M6 10h12M6 14h12' stroke='%23F7941E' stroke-width='2'/></svg>",
+    matlab: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='4' fill='%230076D6'/><text x='12' y='17' text-anchor='middle' fill='white' font-size='12' font-weight='bold'>M</text></svg>"
+};
+var skinUrls = {
+    vscode: '/BookStoreApp/src/BookServlet.java',
+    eclipse: '/workspace/BookStoreApp/src/com/bookstore/servlet/BookServlet.java',
+    matlab: '/MATLAB/analysis.m'
+};
+
+function switchSkin(id) {
+    currentSkin = id;
+    document.querySelectorAll('.skin').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.sw-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelector('.sw-btn[onclick*="'+id+'"]').classList.add('active');
+    document.title = skinTitles[id];
+    var fav = document.querySelector('link[rel="icon"]');
+    if (fav) fav.href = skinFavicons[id];
+    try { history.replaceState(null, '', skinUrls[id]); } catch(e){}
+}
+
+// ===== BACK TO CHEATSHEET =====
+var referrer = document.referrer;
+function goBack() {
+    if (referrer && (referrer.indexOf('wt.html') !== -1 || referrer.indexOf('bdc.html') !== -1)) {
+        window.location.href = referrer;
+    } else {
+        window.history.back();
+    }
+}
+
+// Esc = go back to cheatsheet
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        e.preventDefault();
+        goBack();
+        return;
+    }
+});
+
+// Also show switcher on hover near bottom
+var switcher = document.getElementById('switcher');
+document.addEventListener('mousemove', function(e) {
+    if (e.clientY > window.innerHeight - 60) {
+        switcher.classList.add('show');
+    } else {
+        switcher.classList.remove('show');
+    }
+});
+
+// Triple-click top-left to go back (secret exit)
+var exitZone = document.createElement('div');
+exitZone.style.cssText = 'position:fixed;top:0;left:0;width:60px;height:30px;z-index:100001;cursor:default';
+document.body.appendChild(exitZone);
+var tc = 0, tt = null;
+exitZone.addEventListener('click', function(){
+    tc++;
+    if (tc === 1) tt = setTimeout(function(){ tc=0; }, 600);
+    if (tc >= 3) { clearTimeout(tt); tc=0; goBack(); }
+});
+</script>
+</body>
+</html>
