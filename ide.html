@@ -102,48 +102,6 @@ body{font-family:Consolas,'Courier New',monospace;overflow:hidden;height:100vh;w
 #eclipse .ann{color:#808000}
 #eclipse .num{color:#0000c0}
 
-/* ========== MATLAB SKIN ========== */
-#matlab{background:#f5f5f5;color:#000;font-size:13px;font-family:Consolas,monospace}
-#matlab .titlebar{background:#0076d6;padding:0 0 0 8px;display:flex;align-items:center;height:30px}
-#matlab .titlebar .title{flex:1;text-align:center;color:#fff;font-size:12px;font-weight:bold}
-#matlab .winbtns{display:flex;height:100%}
-#matlab .winbtn{width:46px;height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px}
-#matlab .winbtn:hover{background:rgba(255,255,255,0.2)}
-#matlab .winbtn.close:hover{background:#e81123}
-#matlab .toolbar{background:#f0f0f0;border-bottom:1px solid #ccc;padding:2px 8px;display:flex;gap:6px;height:50px;align-items:center;flex-wrap:wrap}
-#matlab .tb-section{display:flex;flex-direction:column;align-items:center;padding:2px 10px;border-right:1px solid #ddd;gap:2px}
-#matlab .tb-section span{font-size:10px;color:#666}
-#matlab .tb-btn{background:#e8e8e8;border:1px solid #bbb;padding:3px 10px;font-size:11px;color:#333;cursor:pointer}
-#matlab .tb-btn:hover{background:#ddd}
-#matlab .ribbon-tabs{display:flex;background:#f8f8f8;border-bottom:1px solid #ccc;height:24px;padding:0 8px;gap:16px;align-items:center;font-size:11px}
-#matlab .ribbon-tab{color:#333;padding:4px 0;cursor:pointer}
-#matlab .ribbon-tab.active{font-weight:bold;border-bottom:2px solid #0076d6;color:#0076d6}
-#matlab .main{display:flex;flex:1;overflow:hidden}
-#matlab .sidebar{width:220px;background:#fff;border-right:1px solid #ccc;display:flex;flex-direction:column}
-#matlab .sidebar-title{background:#f0f0f0;padding:4px 8px;font-size:11px;font-weight:bold;color:#333;border-bottom:1px solid #ccc}
-#matlab .ws-row{padding:3px 8px;font-size:11px;color:#333;border-bottom:1px solid #eee;display:flex;justify-content:space-between}
-#matlab .ws-row:hover{background:#e8f0fe}
-#matlab .ws-name{color:#0076d6}
-#matlab .ws-val{color:#555}
-#matlab .editor{flex:1;display:flex;flex-direction:column;overflow:hidden}
-#matlab .tabs{display:flex;background:#f0f0f0;border-bottom:1px solid #ccc;height:26px}
-#matlab .tab{padding:4px 16px;color:#333;font-size:12px;border-right:1px solid #ddd;cursor:pointer;background:#e8e8e8}
-#matlab .tab.active{background:#fff;font-weight:bold}
-#matlab .code-area{flex:1;display:flex;overflow-y:auto;padding:4px 0;background:#fff;line-height:20px}
-#matlab .lines{width:40px;text-align:right;padding-right:8px;color:#aaa;user-select:none}
-#matlab .code{flex:1;padding-left:8px;white-space:pre}
-#matlab .command-window{height:180px;background:#fff;border-top:1px solid #ccc;display:flex;flex-direction:column}
-#matlab .cmd-title{background:#f0f0f0;padding:4px 8px;font-size:11px;font-weight:bold;color:#333;border-bottom:1px solid #ccc}
-#matlab .cmd-body{flex:1;padding:8px;font-size:12px;color:#000;overflow-y:auto;line-height:1.6;font-family:Consolas,monospace}
-#matlab .cmd-prompt{color:#0076d6;font-weight:bold}
-#matlab .statusbar{height:22px;background:#f0f0f0;display:flex;align-items:center;padding:0 12px;font-size:11px;color:#555;border-top:1px solid #ccc}
-#matlab .kw{color:#0000ff}
-#matlab .str{color:#a020f0}
-#matlab .fn{color:#000}
-#matlab .cmt{color:#228b22}
-#matlab .num{color:#000}
-#matlab .op{color:#000}
-
 .cursor-blink{animation:cblink 1s step-end infinite}
 @keyframes cblink{50%{opacity:0}}
 
@@ -296,82 +254,11 @@ body{font-family:Consolas,'Courier New',monospace;overflow:hidden;height:100vh;w
 </div>
 </div>
 
-<!-- ===== MATLAB ===== -->
-<div class="skin" id="matlab">
-<div class="titlebar">
-  <span class="title">MATLAB R2024a - analysis.m</span>
-  <span class="winbtns"><span class="winbtn">&#8211;</span><span class="winbtn">&#9723;</span><span class="winbtn close">&#10005;</span></span>
-</div>
-<div class="ribbon-tabs">
-  <span class="ribbon-tab active">HOME</span>
-  <span class="ribbon-tab">PLOTS</span>
-  <span class="ribbon-tab">APPS</span>
-  <span class="ribbon-tab">EDITOR</span>
-  <span class="ribbon-tab">PUBLISH</span>
-  <span class="ribbon-tab">VIEW</span>
-</div>
-<div class="toolbar">
-  <div class="tb-section"><span class="tb-btn">&#128194; New</span><span>FILE</span></div>
-  <div class="tb-section"><span class="tb-btn">&#9654; Run</span><span>RUN</span></div>
-  <div class="tb-section"><span class="tb-btn">&#128200; Plot</span><span>PLOTS</span></div>
-  <div class="tb-section"><span class="tb-btn">&#128269; Find</span><span>NAVIGATE</span></div>
-</div>
-<div class="main">
-  <div class="sidebar">
-    <div class="sidebar-title">Workspace</div>
-    <div class="ws-row"><span class="ws-name">x</span><span class="ws-val">1x100 double</span></div>
-    <div class="ws-row"><span class="ws-name">y</span><span class="ws-val">1x100 double</span></div>
-    <div class="ws-row"><span class="ws-name">coeffs</span><span class="ws-val">1x3 double</span></div>
-    <div class="ws-row"><span class="ws-name">data</span><span class="ws-val">50x4 table</span></div>
-    <div class="ws-row"><span class="ws-name">result</span><span class="ws-val">1x1 struct</span></div>
-    <div class="ws-row"><span class="ws-name">mu</span><span class="ws-val">3.4521</span></div>
-    <div class="ws-row"><span class="ws-name">sigma</span><span class="ws-val">1.2087</span></div>
-    <div class="ws-row"><span class="ws-name">n</span><span class="ws-val">100</span></div>
-    <div style="margin-top:16px"></div>
-    <div class="sidebar-title">Current Folder</div>
-    <div class="ws-row"><span>&#128194; +data</span><span></span></div>
-    <div class="ws-row"><span>&#128196; analysis.m</span><span></span></div>
-    <div class="ws-row"><span>&#128196; preprocess.m</span><span></span></div>
-    <div class="ws-row"><span>&#128196; plotResults.m</span><span></span></div>
-    <div class="ws-row"><span>&#128196; README.md</span><span></span></div>
-  </div>
-  <div class="editor">
-    <div class="tabs">
-      <div class="tab active">analysis.m</div>
-      <div class="tab">preprocess.m</div>
-    </div>
-    <div class="code-area">
-      <div class="lines" id="mat-lines"></div>
-      <div class="code" id="mat-code"></div>
-    </div>
-    <div class="command-window">
-      <div class="cmd-title">Command Window</div>
-      <div class="cmd-body">
-        <span class="cmd-prompt">&gt;&gt;</span> run('analysis.m')<br>
-        Loading dataset... done.<br>
-        Fitting polynomial model (degree 2)...<br>
-        R-squared: 0.9847<br>
-        RMSE: 0.1253<br>
-        Coefficients: [2.3401, -1.5672, 0.8834]<br>
-        <span style="color:green">Analysis complete. Plot saved to results/fig1.png</span><br>
-        <span class="cmd-prompt">&gt;&gt;</span> <span class="cursor-blink">|</span>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="statusbar">
-  <span>Ready</span>
-  <span style="flex:1"></span>
-  <span>Ln 18 Col 1</span>
-</div>
-</div>
-
 <!-- Switcher bar (hover bottom center to reveal) -->
 <div class="ide-switcher" id="switcher">
   <span class="sw-hint">Switch:</span>
   <span class="sw-btn active" onclick="switchSkin('vscode')">VS Code</span>
   <span class="sw-btn" onclick="switchSkin('eclipse')">Eclipse</span>
-  <span class="sw-btn" onclick="switchSkin('matlab')">MATLAB</span>
 </div>
 
 <!-- Invisible back hint -->
@@ -491,59 +378,6 @@ var eclCode = [
 '}'
 ];
 
-var matCode = [
-'<span class="cmt">%% Data Analysis Script</span>',
-'<span class="cmt">% Load and analyze experimental dataset</span>',
-'<span class="cmt">% Author: Student | Date: 2024</span>',
-'',
-'<span class="kw">clc</span>; <span class="kw">clear</span>; <span class="kw">close all</span>;',
-'',
-'<span class="cmt">% Load dataset</span>',
-'fprintf(<span class="str">\'Loading dataset... \'</span>);',
-'data = readtable(<span class="str">\'data/experiment_results.csv\'</span>);',
-'fprintf(<span class="str">\'done.\\n\'</span>);',
-'',
-'<span class="cmt">% Extract variables</span>',
-'x = data.Temperature;',
-'y = data.Pressure;',
-'n = <span class="fn">length</span>(x);',
-'',
-'<span class="cmt">% Statistical summary</span>',
-'mu = <span class="fn">mean</span>(y);',
-'sigma = <span class="fn">std</span>(y);',
-'fprintf(<span class="str">\'Mean: %.4f, Std: %.4f\\n\'</span>, mu, sigma);',
-'',
-'<span class="cmt">% Polynomial curve fitting</span>',
-'degree = <span class="num">2</span>;',
-'fprintf(<span class="str">\'Fitting polynomial model (degree %d)...\\n\'</span>, degree);',
-'coeffs = <span class="fn">polyfit</span>(x, y, degree);',
-'y_pred = <span class="fn">polyval</span>(coeffs, x);',
-'',
-'<span class="cmt">% Goodness of fit</span>',
-'SS_res = <span class="fn">sum</span>((y - y_pred).^<span class="num">2</span>);',
-'SS_tot = <span class="fn">sum</span>((y - mu).^<span class="num">2</span>);',
-'R2 = <span class="num">1</span> - SS_res/SS_tot;',
-'RMSE = <span class="fn">sqrt</span>(<span class="fn">mean</span>((y - y_pred).^<span class="num">2</span>));',
-'',
-'fprintf(<span class="str">\'R-squared: %.4f\\n\'</span>, R2);',
-'fprintf(<span class="str">\'RMSE: %.4f\\n\'</span>, RMSE);',
-'',
-'<span class="cmt">% Plot results</span>',
-'<span class="fn">figure</span>(<span class="str">\'Position\'</span>, [<span class="num">100 100 800 500</span>]);',
-'<span class="fn">scatter</span>(x, y, <span class="num">30</span>, <span class="str">\'b\'</span>, <span class="str">\'filled\'</span>); <span class="kw">hold on</span>;',
-'x_fit = <span class="fn">linspace</span>(<span class="fn">min</span>(x), <span class="fn">max</span>(x), <span class="num">200</span>);',
-'<span class="fn">plot</span>(x_fit, <span class="fn">polyval</span>(coeffs, x_fit), <span class="str">\'r-\'</span>, <span class="str">\'LineWidth\'</span>, <span class="num">2</span>);',
-'<span class="fn">xlabel</span>(<span class="str">\'Temperature (°C)\'</span>);',
-'<span class="fn">ylabel</span>(<span class="str">\'Pressure (kPa)\'</span>);',
-'<span class="fn">title</span>(<span class="fn">sprintf</span>(<span class="str">\'Polynomial Fit (R² = %.4f)\'</span>, R2));',
-'<span class="fn">legend</span>(<span class="str">\'Data\'</span>, <span class="str">\'Fit\'</span>, <span class="str">\'Location\'</span>, <span class="str">\'northwest\'</span>);',
-'<span class="fn">grid on</span>;',
-'',
-'<span class="cmt">% Save figure</span>',
-'<span class="fn">saveas</span>(<span class="fn">gcf</span>, <span class="str">\'results/fig1.png\'</span>);',
-'fprintf(<span class="str">\'Analysis complete. Plot saved to results/fig1.png\\n\'</span>);'
-];
-
 // ===== FILL CODE =====
 function fillCode(lines_id, code_id, codeArr) {
     var lh = '', ch = '';
@@ -556,24 +390,20 @@ function fillCode(lines_id, code_id, codeArr) {
 }
 fillCode('vsc-lines', 'vsc-code', vscCode);
 fillCode('ecl-lines', 'ecl-code', eclCode);
-fillCode('mat-lines', 'mat-code', matCode);
 
 // ===== SKIN SWITCHING =====
 var currentSkin = 'vscode';
 var skinTitles = {
     vscode: 'BookStoreApp - Visual Studio Code',
-    eclipse: 'Java - BookServlet.java - Eclipse IDE',
-    matlab: 'MATLAB R2024a - analysis.m'
+    eclipse: 'Java - BookServlet.java - Eclipse IDE'
 };
 var skinFavicons = {
     vscode: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23007ACC' d='M17.583 2.213l-5.32 4.84-4.026-3.053L3 6.213v11.574l5.237 2.213 4.026-3.053 5.32 4.84L24 19.133V4.867l-6.417-2.654z'/></svg>",
-    eclipse: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='%232C2255'/><path d='M6 10h12M6 14h12' stroke='%23F7941E' stroke-width='2'/></svg>",
-    matlab: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='4' fill='%230076D6'/><text x='12' y='17' text-anchor='middle' fill='white' font-size='12' font-weight='bold'>M</text></svg>"
+    eclipse: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='%232C2255'/><path d='M6 10h12M6 14h12' stroke='%23F7941E' stroke-width='2'/></svg>"
 };
 var skinUrls = {
     vscode: '/BookStoreApp/src/BookServlet.java',
-    eclipse: '/workspace/BookStoreApp/src/com/bookstore/servlet/BookServlet.java',
-    matlab: '/MATLAB/analysis.m'
+    eclipse: '/workspace/BookStoreApp/src/com/bookstore/servlet/BookServlet.java'
 };
 
 function switchSkin(id) {
