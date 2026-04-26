@@ -108,6 +108,9 @@ body{font-family:Consolas,'Courier New',monospace;overflow:hidden;height:100vh;w
 /* Back hint */
 .back-hint{position:fixed;top:8px;right:8px;color:#555;font-size:10px;z-index:100000;opacity:0;transition:opacity 0.3s}
 .back-hint:hover{opacity:1}
+/* Unsaved dot */
+.unsaved-dot{display:inline-block;width:8px;height:8px;background:#fff;border-radius:50%;margin-left:4px}
+#eclipse .unsaved-dot{background:#333}
 </style>
 </head>
 <body>
@@ -147,7 +150,7 @@ body{font-family:Consolas,'Courier New',monospace;overflow:hidden;height:100vh;w
   </div>
   <div class="editor">
     <div class="tabs">
-      <div class="tab active">BookServlet.java <span>&times;</span></div>
+      <div class="tab active">BookServlet.java <span class="unsaved-dot"></span><span>&times;</span></div>
       <div class="tab">index.html <span>&times;</span></div>
       <div class="tab">style.css <span>&times;</span></div>
     </div>
@@ -221,7 +224,7 @@ body{font-family:Consolas,'Courier New',monospace;overflow:hidden;height:100vh;w
   </div>
   <div class="editor">
     <div class="tabs">
-      <div class="tab active">&#9827; BookServlet.java</div>
+      <div class="tab active">&#9827; BookServlet.java <span class="unsaved-dot"></span></div>
       <div class="tab">&#9827; Book.java</div>
       <div class="tab">index.html</div>
     </div>
@@ -265,6 +268,16 @@ body{font-family:Consolas,'Courier New',monospace;overflow:hidden;height:100vh;w
 <div class="back-hint" id="backHint">Esc = back</div>
 
 <script>
+// ===== BLOCK DEVTOOLS & RIGHT-CLICK =====
+document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+document.addEventListener('keydown', function(e){
+    // Block F12
+    if (e.key === 'F12') { e.preventDefault(); return; }
+    // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U
+    if (e.ctrlKey && e.shiftKey && ['I','i','J','j','C','c'].indexOf(e.key) !== -1) { e.preventDefault(); return; }
+    if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); return; }
+});
+
 // ===== CODE DATA =====
 var vscCode = [
 '<span class="kw">package</span> <span class="str">com.bookstore.servlet</span>;',
@@ -416,16 +429,15 @@ function switchSkin(id) {
     var fav = document.querySelector('link[rel="icon"]');
     if (fav) fav.href = skinFavicons[id];
     try { history.replaceState(null, '', skinUrls[id]); } catch(e){}
+    startTyping();
 }
 
 // ===== BACK TO CHEATSHEET =====
-var referrer = document.referrer;
+var savedPage = localStorage.getItem('cheat_page');
 function goBack() {
-    if (referrer && (referrer.indexOf('wt.html') !== -1 || referrer.indexOf('bdc.html') !== -1)) {
-        window.location.href = referrer;
-    } else {
-        window.history.back();
-    }
+    if (savedPage === 'wt') { window.location.replace('wt.html'); }
+    else if (savedPage === 'bdc') { window.location.replace('bdc.html'); }
+    else { window.history.back(); }
 }
 
 // Esc = go back to cheatsheet
@@ -457,6 +469,102 @@ exitZone.addEventListener('click', function(){
     if (tc === 1) tt = setTimeout(function(){ tc=0; }, 600);
     if (tc >= 3) { clearTimeout(tt); tc=0; goBack(); }
 });
+
+// ===== REAL CLOCK IN STATUS BAR =====
+function updateClocks() {
+    var now = new Date();
+    var t = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    // VS Code status bar - append clock
+    var vscSb = document.querySelector('#vscode .statusbar');
+    var vscClock = document.getElementById('vsc-clock');
+    if (!vscClock) { vscClock = document.createElement('span'); vscClock.id = 'vsc-clock'; vscSb.appendChild(vscClock); }
+    vscClock.textContent = t;
+    // Eclipse status bar
+    var eclSb = document.querySelector('#eclipse .statusbar');
+    var eclClock = document.getElementById('ecl-clock');
+    if (!eclClock) { eclClock = document.createElement('span'); eclClock.id = 'ecl-clock'; eclSb.appendChild(eclClock); }
+    eclClock.textContent = t;
+}
+updateClocks();
+setInterval(updateClocks, 10000);
+
+// ===== FAKE TYPING ANIMATION =====
+var typingInterval = null;
+function startTyping() {
+    if (typingInterval) clearInterval(typingInterval);
+    var codeEl = currentSkin === 'vscode' ? document.getElementById('vsc-code') : document.getElementById('ecl-code');
+    var linesEl = currentSkin === 'vscode' ? document.getElementById('vsc-lines') : document.getElementById('ecl-lines');
+    var codeArr = currentSkin === 'vscode' ? vscCode : eclCode;
+    // Add a few extra "typing" lines
+    var extraLines = [
+        '',
+        '    <span class="cmt">// TODO: Add pagination support</span>',
+        '    <span class="cmt">// TODO: Implement caching</span>',
+        '    <span class="kw">private int</span> pageSize = <span class="num">10</span>;'
+    ];
+    var lineIdx = 0;
+    var charIdx = 0;
+    var baseLen = codeArr.length;
+    var typingLine = '';
+    typingInterval = setInterval(function(){
+        if (lineIdx >= extraLines.length) { clearInterval(typingInterval); return; }
+        var raw = extraLines[lineIdx].replace(/<[^>]+>/g, '');
+        if (charIdx <= raw.length) {
+            // Show partial line
+            charIdx++;
+            // Update line count
+            linesEl.innerHTML = '';
+            for (var i = 1; i <= baseLen + lineIdx + 1; i++) linesEl.innerHTML += i + '<br>';
+        } else {
+            lineIdx++;
+            charIdx = 0;
+        }
+    }, 200 + Math.random() * 300);
+}
+// Start typing on load after a delay
+setTimeout(startTyping, 2000);
+
+// ===== RANDOMIZE OPEN FILE =====
+(function(){
+    var vscFiles = document.querySelectorAll('#vscode .explorer .file');
+    var eclFiles = document.querySelectorAll('#eclipse .tree-item.file');
+    if (vscFiles.length > 1) {
+        var ri = Math.floor(Math.random() * vscFiles.length);
+        vscFiles.forEach(function(f){ f.classList.remove('active'); });
+        vscFiles[ri].classList.add('active');
+    }
+    if (eclFiles.length > 1) {
+        var ri = Math.floor(Math.random() * eclFiles.length);
+        eclFiles.forEach(function(f){ f.classList.remove('active'); });
+        eclFiles[ri].classList.add('active');
+    }
+})();
+
+// ===== FAKE PROGRESSIVE BUILD OUTPUT =====
+(function(){
+    var vscTerm = document.querySelector('#vscode .term-body');
+    var eclProb = document.querySelector('#eclipse .prob-body');
+    var buildLines = [
+        {delay:3000, text:'<span class="prompt">PS C:\\BookStoreApp&gt;</span> mvn package -DskipTests'},
+        {delay:5000, text:'<span style="color:#8b949e">[INFO] Building BookStoreApp 1.0-SNAPSHOT</span>'},
+        {delay:7500, text:'<span style="color:#8b949e">[INFO] --- maven-resources-plugin:3.2.0:resources ---</span>'},
+        {delay:9000, text:'<span style="color:#8b949e">[INFO] Copying 3 resources</span>'},
+        {delay:11000, text:'<span style="color:#8b949e">[INFO] --- maven-compiler-plugin:3.8.1:compile ---</span>'},
+        {delay:13000, text:'<span style="color:#8b949e">[INFO] Compiling 6 source files to target/classes</span>'},
+        {delay:16000, text:'<span style="color:#238636">[INFO] BUILD SUCCESS</span>'},
+        {delay:17000, text:'<span style="color:#8b949e">[INFO] Total time: 4.213 s</span>'},
+        {delay:18000, text:'<span class="prompt">PS C:\\BookStoreApp&gt;</span> <span class="cursor-blink">|</span>'}
+    ];
+    buildLines.forEach(function(line){
+        setTimeout(function(){
+            // Remove old cursor
+            var oldCursor = vscTerm.querySelector('.cursor-blink');
+            if (oldCursor) oldCursor.parentElement.removeChild(oldCursor);
+            vscTerm.innerHTML += '<br>' + line.text;
+            vscTerm.scrollTop = vscTerm.scrollHeight;
+        }, line.delay);
+    });
+})();
 </script>
 </body>
 </html>

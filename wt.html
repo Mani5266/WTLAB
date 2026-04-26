@@ -1479,7 +1479,45 @@ document.getElementById('quickNav').style.display = 'flex';
 renderHistory();
 
 // ====== PANIC MODE - Redirect to fake IDE page ======
-function goPanic() { window.location.href = 'ide.html'; }
+function goPanic() {
+    // Save state for resume
+    localStorage.setItem('cheat_page', 'wt');
+    localStorage.setItem('cheat_week', currentWeek);
+    localStorage.setItem('cheat_scroll', window.scrollY);
+    var openSections = [];
+    if (currentWeek) {
+        document.querySelectorAll('#' + currentWeek + ' .section.open').forEach(function(s, i){ openSections.push(i); });
+    }
+    localStorage.setItem('cheat_sections', JSON.stringify(openSections));
+    // Clear search box (no evidence)
+    var sb = document.getElementById('searchBox');
+    if (sb) sb.value = '';
+    // Replace not push — back button won't reveal cheatsheet
+    window.location.replace('ide.html');
+}
+
+// Restore state if returning from panic
+(function(){
+    var pg = localStorage.getItem('cheat_page');
+    if (pg === 'wt' && localStorage.getItem('cheat_week')) {
+        var wk = localStorage.getItem('cheat_week');
+        var sc = parseInt(localStorage.getItem('cheat_scroll')) || 0;
+        var secs = JSON.parse(localStorage.getItem('cheat_sections') || '[]');
+        showWeek(wk);
+        // Restore open sections
+        if (secs.length) {
+            var allSecs = document.querySelectorAll('#' + wk + ' .section');
+            allSecs.forEach(function(s){ s.classList.remove('open'); });
+            secs.forEach(function(i){ if (allSecs[i]) allSecs[i].classList.add('open'); });
+        }
+        setTimeout(function(){ window.scrollTo(0, sc); }, 50);
+        // Clear saved state
+        localStorage.removeItem('cheat_page');
+        localStorage.removeItem('cheat_week');
+        localStorage.removeItem('cheat_scroll');
+        localStorage.removeItem('cheat_sections');
+    }
+})();
 
 // Any key = go to IDE page
 document.addEventListener('keydown', function(e) {
@@ -1495,8 +1533,14 @@ panicCorner.style.cssText = 'position:fixed;bottom:0;right:0;width:50px;height:5
 document.body.appendChild(panicCorner);
 panicCorner.addEventListener('click', goPanic);
 
-// Auto-panic on tab blur
-window.addEventListener('blur', function(){ goPanic(); });
+// Auto-panic on tab blur (200ms delay so rapid Alt+Tab back doesn't trigger)
+var blurTimer = null;
+window.addEventListener('blur', function(){
+    blurTimer = setTimeout(goPanic, 200);
+});
+window.addEventListener('focus', function(){
+    if (blurTimer) { clearTimeout(blurTimer); blurTimer = null; }
+});
 
 // Idle auto-panic (30s no mouse)
 var idleTimer = null;

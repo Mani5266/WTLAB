@@ -1013,9 +1013,40 @@ function doCopy(text, label) {
 renderHistory();
 
 // ====== PANIC MODE - Redirect to fake IDE page ======
-function goPanic() { window.location.href = 'ide.html'; }
+function goPanic() {
+    localStorage.setItem('cheat_page', 'bdc');
+    localStorage.setItem('cheat_week', currentWeek);
+    localStorage.setItem('cheat_scroll', window.scrollY);
+    var openSections = [];
+    if (currentWeek) {
+        document.querySelectorAll('#' + currentWeek + ' .section.open').forEach(function(s, i){ openSections.push(i); });
+    }
+    localStorage.setItem('cheat_sections', JSON.stringify(openSections));
+    var sb = document.getElementById('searchBox');
+    if (sb) sb.value = '';
+    window.location.replace('ide.html');
+}
 
-// Any key = go to IDE page
+(function(){
+    var pg = localStorage.getItem('cheat_page');
+    if (pg === 'bdc' && localStorage.getItem('cheat_week')) {
+        var wk = localStorage.getItem('cheat_week');
+        var sc = parseInt(localStorage.getItem('cheat_scroll')) || 0;
+        var secs = JSON.parse(localStorage.getItem('cheat_sections') || '[]');
+        showWeek(wk);
+        if (secs.length) {
+            var allSecs = document.querySelectorAll('#' + wk + ' .section');
+            allSecs.forEach(function(s){ s.classList.remove('open'); });
+            secs.forEach(function(i){ if (allSecs[i]) allSecs[i].classList.add('open'); });
+        }
+        setTimeout(function(){ window.scrollTo(0, sc); }, 50);
+        localStorage.removeItem('cheat_page');
+        localStorage.removeItem('cheat_week');
+        localStorage.removeItem('cheat_scroll');
+        localStorage.removeItem('cheat_sections');
+    }
+})();
+
 document.addEventListener('keydown', function(e) {
     if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'SELECT') {
         e.preventDefault();
@@ -1023,16 +1054,19 @@ document.addEventListener('keydown', function(e) {
     }
 }, true);
 
-// Invisible panic corner (bottom-right)
 var panicCorner = document.createElement('div');
 panicCorner.style.cssText = 'position:fixed;bottom:0;right:0;width:50px;height:50px;z-index:99998;cursor:default;';
 document.body.appendChild(panicCorner);
 panicCorner.addEventListener('click', goPanic);
 
-// Auto-panic on tab blur
-window.addEventListener('blur', function(){ goPanic(); });
+var blurTimer = null;
+window.addEventListener('blur', function(){
+    blurTimer = setTimeout(goPanic, 200);
+});
+window.addEventListener('focus', function(){
+    if (blurTimer) { clearTimeout(blurTimer); blurTimer = null; }
+});
 
-// Idle auto-panic (30s no mouse)
 var idleTimer = null;
 function resetIdle() {
     if (idleTimer) clearTimeout(idleTimer);
